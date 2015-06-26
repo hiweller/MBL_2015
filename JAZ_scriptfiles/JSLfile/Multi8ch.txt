@@ -1,0 +1,251 @@
+SCRIPT Get_All_8_Spectral_Measurements
+
+// First created by CC Chiao (29 July, 2013)
+Version 0.0.1
+
+VARIABLES
+
+//
+// File to store the Spectrum that we get
+//
+file1 FILE "SpecData/Spec_ch0" ASCII
+file2 FILE "SpecData/Spec_ch1" ASCII
+file3 FILE "SpecData/Spec_ch2" ASCII
+file4 FILE "SpecData/Spec_ch3" ASCII
+file5 FILE "SpecData/Spec_ch4" ASCII
+file6 FILE "SpecData/Spec_ch5" ASCII
+file7 FILE "SpecData/Spec_ch6" ASCII
+file8 FILE "SpecData/Spec_ch7" ASCII
+logfileall FILE "system/LogFileAll.dat" ASCII
+
+// 
+// SPECTRAL variable for the spectrum that we get from the Spectrometer
+//
+spectrum1 SPECTRAL
+spectrum2 SPECTRAL
+spectrum3 SPECTRAL
+spectrum4 SPECTRAL
+spectrum5 SPECTRAL
+spectrum6 SPECTRAL
+spectrum7 SPECTRAL
+spectrum8 SPECTRAL
+
+//
+// Channel that we are getting the spectrum from
+//
+channel INT_16
+
+//
+// Button choice variable
+//
+choice INT_16
+
+//
+// Variable to hold the Integration Time
+//
+integrationtime1 REAL
+integrationtime2 REAL
+integrationtime3 REAL
+integrationtime4 REAL
+integrationtime5 REAL
+integrationtime6 REAL
+integrationtime7 REAL
+integrationtime8 REAL
+
+//
+// Variable to identify the last spectrum number saved
+//
+Counter REAL
+
+//
+// Variable to count the spectrum number saved
+//
+FileCounter INT_16
+StartFileNumber INT_16
+
+END
+
+//
+//  Start of the Script
+//
+START
+
+//
+//  Set the display precision
+//
+SetDisplayPrecision(8,6)
+
+OpenFile(logfileall,ForRead)
+ReadRealVector(logfileall,Counter,1)
+CloseFile(logfileall)
+
+FileCounter := Counter[0]
+
+// In case the file counter reaches to 999
+If (FileCounter = 999) GOTO ENDLOOP
+
+StartFileNumber := Counter[0] + 1
+
+Display("File start from$",StartFileNumber,"")
+pause(2)
+
+//
+//  Set a label so that we can return to this location.
+//
+LABEL TOP
+
+//
+//  Display a message and get a set of spectra  
+//
+DisplayMsg("Collecting$8 spectra")
+
+//
+//  Get the integration time for each channel
+//  Get the spectrum for each channel  
+//
+channel := 0
+Adapt(channel)
+GetIntegrationTime(integrationtime1)
+If (integrationtime1 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime1)
+GetSpectrum(channel,spectrum1)
+DisplayMsg("Succeed ch0$FRONT-45")
+
+channel := 1
+Adapt(channel)
+GetIntegrationTime(integrationtime2)
+If (integrationtime2 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime2)
+GetSpectrum(channel,spectrum2)
+DisplayMsg("Succeed ch1$RIGHT")
+
+channel := 2
+Adapt(channel)
+GetIntegrationTime(integrationtime3)
+If (integrationtime3 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime3)
+GetSpectrum(channel,spectrum3)
+DisplayMsg("Succeed ch2$POL-MIDDLE")
+
+channel := 3
+Adapt(channel)
+GetIntegrationTime(integrationtime4)
+If (integrationtime4 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime4)
+GetSpectrum(channel,spectrum4)
+DisplayMsg("Succeed ch3$RIGHT-45")
+
+channel := 4
+Adapt(channel)
+GetIntegrationTime(integrationtime5)
+If (integrationtime5 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime5)
+GetSpectrum(channel,spectrum5)
+DisplayMsg("Succeed ch4$UP")
+
+channel := 5
+Adapt(channel)
+GetIntegrationTime(integrationtime6)
+If (integrationtime6 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime6)
+GetSpectrum(channel,spectrum6)
+DisplayMsg("Succeed ch5$POL-RIGHT")
+
+channel := 6
+Adapt(channel)
+GetIntegrationTime(integrationtime7)
+If (integrationtime7 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime7)
+GetSpectrum(channel,spectrum7)
+DisplayMsg("Succeed ch6$FRONT")
+
+channel := 7
+Adapt(channel)
+GetIntegrationTime(integrationtime8)
+If (integrationtime8 > 3) GOTO ENDLOOP
+SetIntegrationTime(integrationtime8)
+GetSpectrum(channel,spectrum8)
+DisplayMsg("Succeed ch7$POL-LEFT")
+
+//
+//  Open file for saving spectrum
+//  Save both integration time and spectrum for each measurement
+//
+
+FileCounter := FileCounter + 1
+
+OpenFile(file1,ForWrite,FileCounter)
+OpenFile(file2,ForWrite,FileCounter)
+OpenFile(file3,ForWrite,FileCounter)
+OpenFile(file4,ForWrite,FileCounter)
+OpenFile(file5,ForWrite,FileCounter)
+OpenFile(file6,ForWrite,FileCounter)
+OpenFile(file7,ForWrite,FileCounter)
+OpenFile(file8,ForWrite,FileCounter)
+
+WriteFile(file1,integrationtime1)
+WriteSpectrum(file1,spectrum1)
+WriteFile(file2,integrationtime2)
+WriteSpectrum(file2,spectrum2)
+WriteFile(file3,integrationtime3)
+WriteSpectrum(file3,spectrum3)
+WriteFile(file4,integrationtime4)
+WriteSpectrum(file4,spectrum4)
+WriteFile(file5,integrationtime5)
+WriteSpectrum(file5,spectrum5)
+WriteFile(file6,integrationtime6)
+WriteSpectrum(file6,spectrum6)
+WriteFile(file7,integrationtime7)
+WriteSpectrum(file7,spectrum7)
+WriteFile(file8,integrationtime8)
+WriteSpectrum(file8,spectrum8)
+
+//
+//  Close file
+//
+CloseFile(file1)
+CloseFile(file2)
+CloseFile(file3)
+CloseFile(file4)
+CloseFile(file5)
+CloseFile(file6)
+CloseFile(file7)
+CloseFile(file8)
+
+//
+//  Display a message and show the spectrum number saved
+//
+Display("Spectrum No =$",FileCounter,"")
+pause(2)
+
+//
+//  Set a label so that we can quit the search of integration time
+//
+LABEL ENDLOOP
+
+//
+//  Put up a menu for the user to see if they want to get another set of spectra or exit 
+//
+ShowMenu("Get another?","Exit")
+OnButtonClick(choice, 30)
+
+//
+//  If the user wants another set of spectra go to the TOP label, otherwise exit
+//
+If (choice = 0) GOTO TOP
+
+DisplayMsg("Exiting")
+Pause(2)
+
+OpenFile(logfileall,ForWrite)
+WriteFile(logfileall,FileCounter)
+CloseFile(logfileall)
+
+// Subtract the default setting (100)
+FileCounter := FileCounter - 100
+
+Display("Total$",FileCounter,"$files saved")
+pause(2)
+
+END
+STOP

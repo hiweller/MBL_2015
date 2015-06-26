@@ -1,0 +1,180 @@
+SCRIPT Get_5_Dark_Spectra
+
+// First created by CC Chiao (30 July, 2013)
+Version 0.0.1
+
+VARIABLES
+
+//
+// File to store the dark spectrum
+//
+filedark1 FILE "Spec_ch0_dark" ASCII
+filedark2 FILE "Spec_ch1_dark" ASCII
+filedark3 FILE "Spec_ch3_dark" ASCII
+filedark4 FILE "Spec_ch4_dark" ASCII
+filedark5 FILE "Spec_ch6_dark" ASCII
+
+//
+// File to obtain the integration time from the saved light spectrum
+// 
+file1 FILE "Spec_ch0" ASCII
+file2 FILE "Spec_ch1" ASCII
+file3 FILE "Spec_ch3" ASCII
+file4 FILE "Spec_ch4" ASCII
+file5 FILE "Spec_ch6" ASCII
+logfile FILE "LogFile.dat" ASCII
+
+// 
+// SPECTRAL variable for the spectrum that we get from the Spectrometer
+//
+spectrum1 SPECTRAL
+spectrum2 SPECTRAL
+spectrum3 SPECTRAL
+spectrum4 SPECTRAL
+spectrum5 SPECTRAL
+
+//
+// Channel that we are getting the spectrum from
+//
+channel INT_16
+
+//
+// Variable to hold the Integration Time
+//
+integrationtime1 REAL
+integrationtime2 REAL
+integrationtime3 REAL
+integrationtime4 REAL
+integrationtime5 REAL
+
+IT1 REAL
+IT2 REAL
+IT3 REAL
+IT4 REAL
+IT5 REAL
+
+//
+// Variable to identify the last spectrum number saved
+//
+Counter REAL
+FileNumber INT_16
+
+//
+// Variable to count the spectrum number saved
+//
+FileCounter INT_16
+
+END
+
+
+//
+//  Start of the Script
+//
+START
+
+//
+//  Set the display precision
+//
+SetDisplayPrecision(8,6)
+
+//
+//  Display a message for getting dark spectra
+//
+DisplayMsg("Cover probes")
+pause(2)
+DisplayMsg("Collecting$dark spectra")
+
+//
+//  Use the pre-existing integration time for each channel
+//  Get the dark spectra for each channel  
+//
+
+OpenFile(logfile,ForRead)
+ReadRealVector(logfile,Counter,1)
+CloseFile(logfile)
+FileNumber := Counter[0]
+
+// Always start recording from the 101-th file (to avoid overwring the first 100 saved files)
+FileCounter := 101
+
+//
+//  Set a label so that we can return to this location.
+//
+LABEL TOP
+
+//
+//  Display a message and show the number of dark spectra that will be saved
+//
+Display("Spectrum No = ",FileCounter,"")
+
+OpenFile(file1,ForRead,FileCounter)
+ReadRealVector(file1,integrationtime1,1)
+CloseFile(file1)
+IT1 := integrationtime1[0]
+channel := 0
+SetIntegrationTime(IT1)
+GetSpectrum(channel,spectrum1)
+OpenFile(filedark1,ForWrite,FileCounter)
+WriteFile(filedark1,IT1)
+WriteSpectrum(filedark1,spectrum1)
+CloseFile(filedark1)
+
+OpenFile(file2,ForRead,FileCounter)
+ReadRealVector(file2,integrationtime2,1)
+CloseFile(file2)
+IT2 := integrationtime2[0]
+channel := 1
+SetIntegrationTime(IT2)
+GetSpectrum(channel,spectrum2)
+OpenFile(filedark2,ForWrite,FileCounter)
+WriteFile(filedark2,IT2)
+WriteSpectrum(filedark2,spectrum2)
+CloseFile(filedark2)
+
+OpenFile(file3,ForRead,FileCounter)
+ReadRealVector(file3,integrationtime3,1)
+CloseFile(file3)
+IT3 := integrationtime3[0]
+channel := 3
+SetIntegrationTime(IT3)
+GetSpectrum(channel,spectrum3)
+OpenFile(filedark3,ForWrite,FileCounter)
+WriteFile(filedark3,IT3)
+WriteSpectrum(filedark3,spectrum3)
+CloseFile(filedark3)
+
+OpenFile(file4,ForRead,FileCounter)
+ReadRealVector(file4,integrationtime4,1)
+CloseFile(file4)
+IT4 := integrationtime4[0]
+channel := 4
+SetIntegrationTime(IT4)
+GetSpectrum(channel,spectrum4)
+OpenFile(filedark4,ForWrite,FileCounter)
+WriteFile(filedark4,IT4)
+WriteSpectrum(filedark4,spectrum4)
+CloseFile(filedark4)
+
+OpenFile(file5,ForRead,FileCounter)
+ReadRealVector(file5,integrationtime5,1)
+CloseFile(file5)
+IT5 := integrationtime5[0]
+channel := 6
+SetIntegrationTime(IT5)
+GetSpectrum(channel,spectrum5)
+OpenFile(filedark5,ForWrite,FileCounter)
+WriteFile(filedark5,IT5)
+WriteSpectrum(filedark5,spectrum5)
+CloseFile(filedark5)
+
+FileCounter := FileCounter + 1
+
+If (FileCounter <= FileNumber) GOTO TOP
+
+DisplayMsg("All dark spectra$Saved")
+Pause(2)
+DisplayMsg("Exiting")
+Pause(2)
+
+END
+STOP

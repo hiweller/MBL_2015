@@ -1,0 +1,206 @@
+SCRIPT Get_5_Multiple_Spectral_Measurements
+
+// First created by CC Chiao (3 Aug, 2013)
+Version 0.0.1
+
+VARIABLES
+
+//
+// File to store the Spectrum that we get
+//
+file1 FILE "Spec_ch0" ASCII
+file2 FILE "Spec_ch1" ASCII
+file3 FILE "Spec_ch3" ASCII
+file4 FILE "Spec_ch4" ASCII
+file5 FILE "Spec_ch6" ASCII
+logfile FILE "LogFile.dat" ASCII
+
+// 
+// SPECTRAL variable for the spectrum that we get from the Spectrometer
+//
+spectrum1 SPECTRAL
+spectrum2 SPECTRAL
+spectrum3 SPECTRAL
+spectrum4 SPECTRAL
+spectrum5 SPECTRAL
+
+//
+// Channel that we are getting the spectrum from
+//
+channel INT_16
+
+//
+// Button choice variable
+//
+choice INT_16
+
+//
+// Variable to hold the Integration Time
+//
+integrationtime1 REAL
+integrationtime2 REAL
+integrationtime3 REAL
+integrationtime4 REAL
+integrationtime5 REAL
+
+//
+// Variable to identify the last spectrum number saved
+//
+Counter REAL
+
+//
+// Variable to count the spectrum number saved
+//
+FileCounter INT_16
+StartFileNumber INT_16
+
+END
+
+//
+//  Start of the Script
+//
+START
+
+//
+//  Set the display precision
+//
+SetDisplayPrecision(8,6)
+
+OpenFile(logfile,ForRead)
+ReadRealVector(logfile,Counter,1)
+CloseFile(logfile)
+
+FileCounter := Counter[0]
+
+// In case the file counter reaches to 999
+If (FileCounter = 999) GOTO ENDLOOP
+
+StartFileNumber := Counter[0] + 1
+
+Display("File start from$",StartFileNumber,"")
+pause(2)
+
+//
+//  Set a label so that we can return to this location.
+//
+LABEL TOP
+
+//
+//  Display a message and get a set of spectra  
+//
+DisplayMsg("Collecting$5 spectra")
+
+//
+//  Get the integration time for each channel
+//  Get the spectrum for each channel  
+//
+channel := 0
+Adapt(channel)
+GetIntegrationTime(integrationtime1)
+If (integrationtime1 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime1)
+GetSpectrum(channel,spectrum1)
+DisplayMsg("Succeed ch0$FRONT-45")
+
+channel := 1
+Adapt(channel)
+GetIntegrationTime(integrationtime2)
+If (integrationtime2 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime2)
+GetSpectrum(channel,spectrum2)
+DisplayMsg("Succeed ch1$RIGHT")
+
+channel := 3
+Adapt(channel)
+GetIntegrationTime(integrationtime3)
+If (integrationtime3 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime3)
+GetSpectrum(channel,spectrum3)
+DisplayMsg("Succeed ch3$RIGHT-45")
+
+channel := 4
+Adapt(channel)
+GetIntegrationTime(integrationtime4)
+If (integrationtime4 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime4)
+GetSpectrum(channel,spectrum4)
+DisplayMsg("Succeed ch4$UP")
+
+channel := 6
+Adapt(channel)
+GetIntegrationTime(integrationtime5)
+If (integrationtime5 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime5)
+GetSpectrum(channel,spectrum5)
+DisplayMsg("Succeed ch6$FRONT")
+
+//
+//  Open file for saving spectrum
+//  Save both integration time and spectrum for each measurement
+//
+
+FileCounter := FileCounter + 1
+
+OpenFile(file1,ForWrite,FileCounter)
+OpenFile(file2,ForWrite,FileCounter)
+OpenFile(file3,ForWrite,FileCounter)
+OpenFile(file4,ForWrite,FileCounter)
+OpenFile(file5,ForWrite,FileCounter)
+
+WriteFile(file1,integrationtime1)
+WriteSpectrum(file1,spectrum1)
+WriteFile(file2,integrationtime2)
+WriteSpectrum(file2,spectrum2)
+WriteFile(file3,integrationtime3)
+WriteSpectrum(file3,spectrum3)
+WriteFile(file4,integrationtime4)
+WriteSpectrum(file4,spectrum4)
+WriteFile(file5,integrationtime5)
+WriteSpectrum(file5,spectrum5)
+
+//
+//  Close file
+//
+CloseFile(file1)
+CloseFile(file2)
+CloseFile(file3)
+CloseFile(file4)
+CloseFile(file5)
+
+//
+//  Display a message and show the spectrum number saved
+//
+Display("Spectrum No =$",FileCounter,"")
+pause(2)
+
+//
+//  Set a label so that we can quit the search of integration time
+//
+LABEL ENDLOOP
+
+//
+//  Put up a menu for the user to see if they want to get another set of spectra or exit 
+//
+ShowMenu("Get another?","Exit")
+OnButtonClick(choice, 30)
+
+//
+//  If the user wants another set of spectra go to the TOP label, otherwise exit
+//
+If (choice = 0) GOTO TOP
+
+DisplayMsg("Exiting")
+Pause(2)
+
+OpenFile(logfile,ForWrite)
+WriteFile(logfile,FileCounter)
+CloseFile(logfile)
+
+// Subtract the default setting (100)
+FileCounter := FileCounter - 100
+
+Display("Total$",FileCounter,"$files saved")
+pause(2)
+
+END
+STOP

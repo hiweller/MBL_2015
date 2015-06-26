@@ -1,0 +1,146 @@
+SCRIPT Get_Channel3_Spectral_Measurements
+
+// First created by CC Chiao (24 Aug, 2013)
+Version 0.0.1
+
+VARIABLES
+
+//
+// File to store the Spectrum that we get
+//
+file1 FILE "Spec_ch3" ASCII
+logfile FILE "LogFileCh3.dat" ASCII
+
+// 
+// SPECTRAL variable for the spectrum that we get from the Spectrometer
+//
+spectrum1 SPECTRAL
+
+//
+// Channel that we are getting the spectrum from
+//
+channel INT_16
+
+//
+// Button choice variable
+//
+choice INT_16
+
+//
+// Variable to hold the Integration Time
+//
+integrationtime1 REAL
+
+//
+// Variable to identify the last spectrum number saved
+//
+Counter REAL
+
+//
+// Variable to count the spectrum number saved
+//
+FileCounter INT_16
+StartFileNumber INT_16
+
+END
+
+//
+//  Start of the Script
+//
+START
+
+//
+//  Set the display precision
+//
+SetDisplayPrecision(8,6)
+
+OpenFile(logfile,ForRead)
+ReadRealVector(logfile,Counter,1)
+CloseFile(logfile)
+
+FileCounter := Counter[0]
+
+// In case the file counter reaches to 999
+If (FileCounter = 999) GOTO ENDLOOP
+
+StartFileNumber := Counter[0] + 1
+
+Display("File start from$",StartFileNumber,"")
+pause(2)
+
+//
+//  Set a label so that we can return to this location.
+//
+LABEL TOP
+
+//
+//  Display a message and get a set of spectra  
+//
+DisplayMsg("Collecting$1 spectrum")
+
+//
+//  Get the integration time for each channel
+//  Get the spectrum for each channel  
+//
+channel := 3
+Adapt(channel)
+GetIntegrationTime(integrationtime1)
+If (integrationtime1 > 10) GOTO ENDLOOP
+SetIntegrationTime(integrationtime1)
+GetSpectrum(channel,spectrum1)
+DisplayMsg("Succeed ch3$Right-45")
+
+//
+//  Open file for saving spectrum
+//  Save both integration time and spectrum for each measurement
+//
+
+FileCounter := FileCounter + 1
+
+OpenFile(file1,ForWrite,FileCounter)
+
+WriteFile(file1,integrationtime1)
+WriteSpectrum(file1,spectrum1)
+
+//
+//  Close file
+//
+CloseFile(file1)
+
+//
+//  Display a message and show the spectrum number saved
+//
+Display("Spectrum No =$",FileCounter,"")
+pause(2)
+
+//
+//  Set a label so that we can quit the search of integration time
+//
+LABEL ENDLOOP
+
+//
+//  Put up a menu for the user to see if they want to get another set of spectra or exit 
+//
+ShowMenu("Get another?","Exit")
+OnButtonClick(choice, 30)
+
+//
+//  If the user wants another set of spectra go to the TOP label, otherwise exit
+//
+If (choice = 0) GOTO TOP
+
+DisplayMsg("Exiting")
+Pause(2)
+
+OpenFile(logfile,ForWrite)
+WriteFile(logfile,FileCounter)
+CloseFile(logfile)
+
+// Subtract the default setting (100)
+FileCounter := FileCounter - 100
+
+Display("Total$",FileCounter,"$files saved")
+pause(2)
+
+END
+STOP
