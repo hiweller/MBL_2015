@@ -1,10 +1,10 @@
 
 clear;
 wl = 400:700;
-load Spec_ch0_Spec.dat;
+load spec/Spec_ch0_Spec.dat;
 load spec/Spec_ch1_Spec.dat;
 load spec/Spec_ch3_Spec.dat;
-load spec/Spec_ch4_Spec.dat;
+load slopec/Spec_ch4_Spec.dat;
 load spec/Spec_ch6_Spec.dat;
 Spec_ch0_Spec = Spec_ch0_Spec(:,101:401); % only use from 400 to 700 nm
 Spec_ch1_Spec = Spec_ch1_Spec(:,101:401);
