@@ -5,26 +5,29 @@ function DisplaySpec(Date)
 % fname = fullfile(Date,File);
 % a = load(fname);
 
+a = load([Date,'/','Spec_ch0_Spec.dat']);
+size_a = size(a,1);
+Spec_ch_all = zeros(size_a,501,5);
+
 ch = [0, 1, 3, 4, 6];
-
-for i = [1:5];
-    proc_files = dir(['Date','/',['Spec_',num2str(ch(i)),'_Spec.dat']]);
-    fullname = proc_files(i).name;
-    filename = [Date,'/',fullname];
+for i = (1:5);
+    proc_files = dir([Date,'/','*.dat']);
+    filename = proc_files(i).name;
+    fullfilename = [Date,'/',filename];
+    Spec_ch_all(i) = load([Date,'/',proc_files(i).name]);
 end
-% load filename;
 
 
+% load [Date,'Spec_ch0_Spec.dat'];
 % load Jun26/Spec_ch1_Spec.dat;
 % load Jun26/Spec_ch3_Spec.dat;
 % load Jun26/Spec_ch4_Spec.dat;
 % load Jun26/Spec_ch6_Spec.dat;
 
-% Spec_ch0_Spec = [Date,'/Spec_ch0_Spec.dat'];
-% Spec_ch1_Spec = [Date,'/Spec_ch1_Spec.dat'];
-% Spec_ch3_Spec = [Date,'/Spec_ch3_Spec.dat'];
-% Spec_ch4_Spec = [Date,'/Spec_ch4_Spec.dat'];
-% Spec_ch6_Spec = [Date,'/Spec_ch6_Spec.dat'];
+% Spec_ch1_Spec = [Date,'Spec_ch1_Spec.dat'];
+% Spec_ch3_Spec = [Date,'Spec_ch3_Spec.dat'];
+% Spec_ch4_Spec = [Date,'Spec_ch4_Spec.dat'];
+% Spec_ch6_Spec = [Date,'Spec_ch6_Spec.dat'];
 
 Spec_ch0_Spec = Spec_ch0_Spec(:,101:401); % only use from 400 to 700 nm
 Spec_ch1_Spec = Spec_ch1_Spec(:,101:401);
