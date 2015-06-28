@@ -12,7 +12,7 @@ load IrradCalCh6.dat;
 IrradCal = [IrradCalCh0; IrradCalCh1; IrradCalCh3; IrradCalCh4; IrradCalCh6]; % 5x501
 ch = [0, 1, 3, 4, 6];
 
-for i = [1:2 4:5]
+for i = [1:5]
    JazFiles = dir([SpecDir,'/Spec_ch',num2str(ch(i)),'.*']);
    JazFilesDark = dir([SpecDir,'/Spec_ch',num2str(ch(i)),'_dark.*']);
    for j = 1:numel(JazFiles)
