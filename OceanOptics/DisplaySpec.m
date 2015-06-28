@@ -13,7 +13,9 @@ channel3 = [Date,'/Spec_ch3_Spec.dat'];
 channel4 = [Date,'/Spec_ch4_Spec.dat'];
 channel6 = [Date,'/Spec_ch6_Spec.dat'];
 
-load channel0;
+load Date/'Spec_ch0_Spec.dat';
+
+% channel0;
 load channel1;
 load channel3;
 load channel4;
