@@ -1,25 +1,40 @@
 function DisplaySpec(Date)
 
-wl = 400:700;
+% Date = 'Documents/MBL2015/jaz/Jun26';
+% File = 'Spec_ch0_Spec.dat';
+% fname = fullfile(Date,File);
+% a = load(fname);
 
-% for i = 1:5;
-%     channel(num2str(i)) = [Date,'/Spec_ch(num2str(i))_Spec.dat'];
-%     load channel(num2str(i));
-% end
+ch = [0, 1, 3, 4, 6];
 
-channel0 = [Date,'/Spec_ch0_Spec.dat'];
-channel1 = [Date,'/Spec_ch1_Spec.dat'];
-channel3 = [Date,'/Spec_ch3_Spec.dat'];
-channel4 = [Date,'/Spec_ch4_Spec.dat'];
-channel6 = [Date,'/Spec_ch6_Spec.dat'];
+for i = [1:5];
+    proc_files = dir(['Date','/',['Spec_',num2str(ch(i)),'_Spec.dat']]);
+    fullname = proc_files(i).name;
+    filename = [Date,'/',fullname];
+end
+% load filename;
 
-load Date/'Spec_ch0_Spec.dat';
 
-% channel0;
-load channel1;
-load channel3;
-load channel4;
-load channel6;
+% load Jun26/Spec_ch1_Spec.dat;
+% load Jun26/Spec_ch3_Spec.dat;
+% load Jun26/Spec_ch4_Spec.dat;
+% load Jun26/Spec_ch6_Spec.dat;
+
+% 
+% load Date/'Spec_ch0_Spec.dat';
+% 
+% % channel0;
+% load channel1;
+% load channel3;
+% load channel4;
+% load channel6;
+
+% Spec_ch0_Spec = [Date,'/Spec_ch0_Spec.dat'];
+% Spec_ch1_Spec = [Date,'/Spec_ch1_Spec.dat'];
+% Spec_ch3_Spec = [Date,'/Spec_ch3_Spec.dat'];
+% Spec_ch4_Spec = [Date,'/Spec_ch4_Spec.dat'];
+% Spec_ch6_Spec = [Date,'/Spec_ch6_Spec.dat'];
+
 
 Spec_ch0_Spec = Spec_ch0_Spec(:,101:401); % only use from 400 to 700 nm
 Spec_ch1_Spec = Spec_ch1_Spec(:,101:401);
@@ -29,7 +44,7 @@ Spec_ch6_Spec = Spec_ch6_Spec(:,101:401);
 
 for i = 1:size(Spec_ch0_Spec,1)
 figure
-plot(wl,Spec_ch0_Spec(i ,:),'b'); hold on;
+plot(wl,Spec_ch0_Spec(i,:),'b'); hold on;
 plot(wl,Spec_ch1_Spec(i,:),'c');
 plot(wl,Spec_ch3_Spec(i,:),'g');
 plot(wl,Spec_ch4_Spec(i,:),'m');
