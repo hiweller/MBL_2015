@@ -19,7 +19,7 @@ imshow(ScaledImg(:,:,10));
 rect = getrect;
 
 for i = 1:16
-    AvgWhite = mean2(WhiteImg(540-rect(2)-rect(4):540-rect(2),rect(1):rect(1)+rect(3),i));
+    AvgWhite = mean2(WhiteImg(540-round(rect(2))-round(rect(4)):540-round(rect(2)),round(rect(1)):round(rect(1))+round(rect(3)),i));
     RefObjectImg(:,:,i) = ObjectImg(:,:,i)/AvgWhite;
 end
 
