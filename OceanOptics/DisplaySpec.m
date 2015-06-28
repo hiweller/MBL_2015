@@ -16,14 +16,14 @@ end
 
 for i = 1:size_a
     figure
+    title(['Measurement number: ' num2str(i)]);
     for j = 1:5 
         hold all;
         plot(wl,Spec_ch_all(i,101:401,j));
         hold on;
     end
+    legend({'ch 0 front-45','ch 1 right','ch 3 right-45','ch 4 up','ch 6 front'});
     hold off;
-%     title(['Measurement number: ' num2str(i)]);
-%     legend({'ch 0 front-45','ch 1 right','ch 3 right-45','ch 4 up','ch 6 front'})
 end
 
 end
