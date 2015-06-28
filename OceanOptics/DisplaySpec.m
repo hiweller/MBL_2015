@@ -18,35 +18,6 @@ for i = (1:5);
 end
 
 
-% load [Date,'Spec_ch0_Spec.dat'];
-% load Jun26/Spec_ch1_Spec.dat;
-% load Jun26/Spec_ch3_Spec.dat;
-% load Jun26/Spec_ch4_Spec.dat;
-% load Jun26/Spec_ch6_Spec.dat;
-
-<<<<<<< HEAD
-% Spec_ch1_Spec = [Date,'Spec_ch1_Spec.dat'];
-% Spec_ch3_Spec = [Date,'Spec_ch3_Spec.dat'];
-% Spec_ch4_Spec = [Date,'Spec_ch4_Spec.dat'];
-% Spec_ch6_Spec = [Date,'Spec_ch6_Spec.dat'];
-=======
-% 
-% load Date/'Spec_ch0_Spec.dat';
-% 
-% % channel0;
-% load channel1;
-% load channel3;
-% load channel4;
-% load channel6;
-
-% Spec_ch0_Spec = [Date,'/Spec_ch0_Spec.dat'];
-% Spec_ch1_Spec = [Date,'/Spec_ch1_Spec.dat'];
-% Spec_ch3_Spec = [Date,'/Spec_ch3_Spec.dat'];
-% Spec_ch4_Spec = [Date,'/Spec_ch4_Spec.dat'];
-% Spec_ch6_Spec = [Date,'/Spec_ch6_Spec.dat'];
->>>>>>> 1a48521c1e0fb9330373d05ffd225ba8af6ca791
-
-
 Spec_ch0_Spec = Spec_ch0_Spec(:,101:401); % only use from 400 to 700 nm
 Spec_ch1_Spec = Spec_ch1_Spec(:,101:401);
 Spec_ch3_Spec = Spec_ch3_Spec(:,101:401);
