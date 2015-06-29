@@ -1,6 +1,9 @@
 function TiffSort(Date)
 % sorts the individual tiff files into folders according to name
 % ex: TiffSort('Jun29')
+% you should be in the directory when you execute this function
+% ex: be in the Jun29 function when you execute TiffSort('Jun29')
+
 
 directoryRead = dir(['../',Date]);
 %fileNames = directoryRead.name;
