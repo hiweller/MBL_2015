@@ -4,7 +4,7 @@ function TiffSort(Date)
 directoryRead = dir(Date);
 %fileNames = directoryRead.name;
 directoryRead = directoryRead(arrayfun(@(x)x.name(1),
-    directoryRead) ~='.');
+    directoryRead) ~='.'); %remove hidden files
 
 
 
