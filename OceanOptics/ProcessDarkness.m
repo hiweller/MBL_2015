@@ -1,7 +1,8 @@
 function ProcessDarkness(SpecDir)
 % subtract dark spectrum
 % convert to irradiance spectrum (photon/cm^2/nm/sec)
-% last update: Aug 24, 2013
+% only look at dark spectra
+% 
 
 wl = 300:800;
 load IrradCalCh0.dat; % from 300-800 nm
