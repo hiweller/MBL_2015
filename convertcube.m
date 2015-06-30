@@ -10,8 +10,8 @@ imagedir = dir(Date);
 imagedir = imagedir(arrayfun(@(x)x.name(1),imagedir) ~='.'); %remove hidden files
 
 for i = 1:length(imagedir); 
-    fid = fopen(imagedir(i).name);
-    cuberead = fread(fid,[2048 2048],'uint16');
+%     fid = fopen(imagedir(i).name);
+    cuberead = fread(fopen(imagedir(i).name),[2048 2048],'uint16');
     figure(i); 
     for j = 1:4
         for k = 1:4
