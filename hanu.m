@@ -1,11 +1,14 @@
 % change to 1 if you want to save outputs
+
 Image_save = 1;
 
 % find all the images you need to work on
+
 d = dir('2014*sec');
 
 
 % for each image
+
 for ii = 1:length(d),
     fid = fopen(d(ii).name);
     I1 = fread(fid,[2560 2160],'uint16');

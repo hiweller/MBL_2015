@@ -10,6 +10,7 @@ imagedir = imagedir(arrayfun(@(x)x.name(1),imagedir) ~='.'); %remove hidden file
 for i = 1:length(imagedir); 
     fid = fopen(imagedir(i).name);
     cuberead = fread(fid,[2048 2048],'uint16');
+<<<<<<< HEAD
     for j = 1:4
         for k
         ch = (cuberead(j:4:2560, 1:4:2160));
@@ -34,4 +35,16 @@ for i = 1:length(imagedir);
 %        
 %         
     
+=======
+    figure(i);
+    for j = 1:4
+        for k = 1:4
+        ch = (cuberead(j:4:2048, k:4:2048));
+        channel = sprintf('chan',j,'.tiff');
+        imagesc(ch); 
+        figure(); 
+        outname = sprintf('%s%s%s',imagedir(i).name,'.',channel);
+        end
+    end  
+>>>>>>> 31400876aaccdd63931fc22506e29f2bf6251ecd
 end
