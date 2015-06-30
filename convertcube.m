@@ -1,9 +1,10 @@
 function ConvertCube(Date)
+% interprets binary .3d data files produced by HSI into 16 tiffs and graphs
+% them in a 4x4 grid...theoretically
+
 % need to be in the directory to execute the function
 % ex: ConvertCube('Jun29')
 
-% Directory = 'Jun11';
-% find images
 imagedir = dir(['../', Date]); 
 
 % for each image 
@@ -23,9 +24,8 @@ for i = 1:length(imagedir);
         imagesc(ch); % make image
         outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
         subplot(4,4,k+4*(j-1)); % plot all 16 channels in one figure
+        % currently failing to plot the 16th tiff?
         imwrite(ch, [FolderID, '/', outname]) 
-        % subplot is still somehow not plotting the 16th channel for some
-        % reason (it's just blank, axes are 1x1)
         end
     end  
 end
