@@ -13,7 +13,6 @@ for i = 1:length(imagedir);
     figure(i);
     for j = 1:4
         for k = 1:4
-        hold
         ch = (cuberead(j:4:2048, k:4:2048));
         channel = sprintf('chan',j,'.tiff');
         imagesc(ch); 
