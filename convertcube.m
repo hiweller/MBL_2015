@@ -25,7 +25,7 @@ for i = 1:length(imagedir);
         outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
         subplot(4,4,k+4*(j-1)); % plot all 16 channels in one figure
         % currently failing to plot the 16th tiff?
-        imwrite(ch, [FolderID, '/', outname]) 
+        imwrite(uint16(ch), [FolderID, '/', outname]) 
         end
     end  
 end
