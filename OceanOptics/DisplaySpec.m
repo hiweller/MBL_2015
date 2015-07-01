@@ -2,7 +2,7 @@ function DisplaySpec(Date)
 
 wl = 400:700; % wavelengths in the visible
 
-a = load([Date,'/','Spec_ch0_dark_Spec.dat']);
+a = load([Date,'/','Spec_ch0_Spec.dat']);
 size_a = size(a,1);
 Spec_ch_all = zeros(size_a,501,5);
 
