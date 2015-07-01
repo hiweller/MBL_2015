@@ -20,7 +20,7 @@ for i = 1:length(imagedir);
     for j = 1:4
         for k = 1:4 
         ch = (cuberead(j:4:2048, k:4:2048)); % 512x512 grid of 4x4 squares containing pixels for each channel
-        channel = sprintf('%s%d%s','chan',k+4*(j-1),'.tiff');
+        channel = sprintf('%s%d%s','chan',k+4*(j-1),'.tif');
         imagesc(ch); % make image
         outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
         subplot(4,4,k+4*(j-1)); % plot all 16 channels in one figure
