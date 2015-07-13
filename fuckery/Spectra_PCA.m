@@ -9,7 +9,7 @@ function Spectra_PCA(Folder)
 filedir = dir(Folder);
 filedir = filedir(arrayfun(@(x)x.name(1), filedir) ~='.');
 
-ch = [0 1 3 4 6]
+ch = [0 1 3 4 6];
 
 figure(1)
 for i = 1:5
@@ -31,9 +31,11 @@ for i = 1:5
     
 %     col = repmat(length(coeff));
     col = linspace(1, 100, length(coeff(:,1)));
-    p = scatter(coeff(:,1),coeff(:,2),30,col, 'filled');
-    title(['Channel: ', ch(i)]);
+
+    scatter(coeff(:,1),coeff(:,2),30,col, 'filled')
+    title(['Channel: ', num2str(ch(i))]);
+%     legend(channelplot, 'test')
+   labelpoints(coeff(:,1), coeff(:,2), (1:length(coeff(:,1))))
     end
   
 end
-% function(Group1, Group2) and compares them channel by channel using PCA
