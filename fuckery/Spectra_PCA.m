@@ -33,7 +33,8 @@ for i = 1:5
     col = linspace(1, 100, length(coeff(:,1)));
     scatter(coeff(:,1),coeff(:,2),30,col, 'filled')
     title(['Channel: ', num2str(ch(i))]);
+%     legend(channelplot, 'test')
+   labelpoints(coeff(:,1), coeff(:,2), (1:length(coeff(:,1))))
     end
   
 end
-% function(Group1, Group2) and compares them channel by channel using PCA
