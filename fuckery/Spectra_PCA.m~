@@ -30,9 +30,9 @@ for i = 1:5
     subplot(2, 3, i)
     
 %     col = repmat(length(coeff));
-    col = linspace(1, 100, length(coeff(:,1)));
+    col = linspace(1, 100, length(coeff(:,1))
     scatter(coeff(:,1),coeff(:,2),30,col, 'filled')
-    title(['Channel: ', ch(i)]);
+    title(['Channel: ' ch(i)]);
     end
   
 end

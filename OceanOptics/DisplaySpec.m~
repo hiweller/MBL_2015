@@ -19,6 +19,7 @@ for i = 1:size_a
     title(['Measurement number: ' num2str(i)]);
     for j = 1:5 
         hold all;
+        subplot(2,3,i)
         plot(wl,Spec_ch_all(i,101:401,j));
         hold on;
     end
