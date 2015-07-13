@@ -19,13 +19,15 @@ for i = 1:length(imagedir);
     figure(i); 
     for j = 1:4
         for k = 1:4 
-        ch = (cuberead(j:4:2048, k:4:2048)); % 512x512 grid of 4x4 squares containing pixels for each channel
-        channel = sprintf('%s%d%s','chan',k+4*(j-1),'.tif');
-        imagesc(ch); % make image
-        outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
-        subplot(4,4,k+4*(j-1)); % plot all 16 channels in one figure
-        % currently failing to plot the 16th tiff?
-        imwrite(uint16(ch), [FolderID, '/', outname]) 
+            subplot(4,4,k+4*(j-1)); % plot all 16 channels in one figure
+            ch_unflip = (cuberead(j:4:2048, k:4:2048)); % 512x512 grid of 4x4 squares containing pixels for each channel
+            ch = flip(ch_unflip, 2);
+            channel = sprintf('%s%d%s','chan',k+4*(j-1),'.tif');
+            imagesc(ch); % make image
+            colormap(gray);
+            outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
+            % currently failing to plot the 16th tiff?
+            imwrite(uint16(ch), [FolderID, '/', outname]) 
         end
     end  
 end
