@@ -31,7 +31,7 @@ for i = 1:5
     
 %     col = repmat(length(coeff));
     col = linspace(1, 100, length(coeff(:,1)));
-    scatter(coeff(:,1),coeff(:,2),30,col, 'filled')
+    p = scatter(coeff(:,1),coeff(:,2),30,col, 'filled');
     title(['Channel: ', ch(i)]);
     end
   
