@@ -1,24 +1,9 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-function Spectra_PCA(group1, group2) 
-
-% find all .dat files in directory 
-% each .dat file contains data from one channel from diff measurements
-% transpose the .dat matrix
-
-
-
-end
-=======
-function Spectra_PCA(Group1, Group2)
-=======
 function Spectra_PCA(Folder)
 % can make this function either run in a folder or load everything in
 % workspace first -- for now i'll set it to run in a folder
 % run in a folder that CONTAINS THE TWO FOLDERS with your dat files for
 % comparison since ProcessSpec names them the same each time 
 
->>>>>>> de39010223d9a5bb36c98b68226f2345ef9a1410
 % assumes you already ran ProcessSpec and have .dat files for comparison
 % run PCA on each channel/.dat file
 % plot them all as subplots maybe?
@@ -55,4 +40,3 @@ end
 
 end
 % function(Group1, Group2) and compares them channel by channel using PCA
->>>>>>> fa9dee7a8c338a7f033ec98a2a1d212d2bc2c39c
