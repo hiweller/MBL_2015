@@ -14,7 +14,7 @@ for i = (1:5);
     Spec_ch_all(:,:,i) = load([Date,'/',proc_files(i).name]);
 end
 
-for i = 1:size_a
+for i = 1:size_a;
     figure
     title(['Measurement number: ' num2str(i)]);
     for j = 1:5 

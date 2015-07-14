@@ -32,10 +32,10 @@ for i = 1:5
 %     col = repmat(length(coeff));
     col = linspace(1, 100, length(coeff(:,1)));
 
-    scatter(coeff(:,1),coeff(:,2),30,col, 'filled')
+    scatter(coeff(:,1),coeff(:,2),30,col, 'filled');
     title(['Channel: ', num2str(ch(i))]);
 %     legend(channelplot, 'test')
-   labelpoints(coeff(:,1), coeff(:,2), (1:length(coeff(:,1))))
-    end
-  
+   labelpoints(coeff(:,1), coeff(:,2), (1:length(coeff(:,1))));
+   end
+    
 end
