@@ -23,10 +23,11 @@ for i = 1:length(imagedir);
             ch_unflip = (cuberead(j:4:2048, k:4:2048)); % 512x512 grid of 4x4 squares containing pixels for each channel
             ch = flip(ch_unflip, 2); % image inverted
             channel = sprintf('%s%d%s','chan',k+4*(j-1),'.tif');
-            imagesc(ch); % make image
-            colormap(gray); % convert to grayscale - does this work?
-            outname = sprintf('%s%s%s',imagedir(i).name,'.',channel); % this doesn't actually save?
-            % currently failing to plot the 16th tiff?
+            albert = max(max(ch));
+            imshow(ch, [0 albert]) % make image
+%             colormap(gray); % convert to grayscale - does this work?
+            % what is this doing?
+            outname = sprintf('%s%s%s',imagedir(i).name,'.',channel);
             imwrite(uint16(ch), [FolderID, '/', outname]);
         end
     end  
