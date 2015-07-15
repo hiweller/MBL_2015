@@ -30,7 +30,8 @@ for i = 1:length(imagedir);
             outname = sprintf('%s%s%s',imagedir(i).name,'.',channel);
             imwrite(uint16(ch), [FolderID, '/', outname]);
         end
-    end  
+    end
+    tightfig
 end
 
 end
