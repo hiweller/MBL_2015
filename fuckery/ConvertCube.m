@@ -5,11 +5,11 @@ function ConvertCube(Date)
 % need to be in the directory to execute the function
 % ex: ConvertCube('Jun29')
 
-imagedir = dir(['../', Date]); 
+imagedir = dir(['../', Date, '/*.3d']); 
 
 % for each image 
 
-imagedir = imagedir(arrayfun(@(x)x.name(1),imagedir) ~='.'); %remove hidden files
+% imagedir = imagedir(arrayfun(@(x)x.name(1),imagedir) ~='.'); %remove hidden files
 
 for i = 1:length(imagedir); 
 %     fid = fopen(imagedir(i).name);
