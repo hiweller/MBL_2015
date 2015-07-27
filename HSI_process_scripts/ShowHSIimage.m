@@ -5,7 +5,7 @@ WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '50
 
 for i = 1:16
     filename = [Date,'/',Directory,'/',Directory,'_',WaveNumber((i-1)*5+1:i*5),'_raw.tiff'];  
-    Img(:,:,i) = imread(filename,'tiff');
+    Img(:,:,i) = imread(filename,'tiff', 'uint16');
 end
 
 ImgRGB(:,:,1) = Img(:,:,15); % 640nm
