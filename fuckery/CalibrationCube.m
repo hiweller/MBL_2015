@@ -7,10 +7,6 @@ for i = 1:16
     TransforMatrix(:, :, i) = vec2mat(index, 4);
 end
 
-% 1:4, 1:4
-% 5:8, 1:4
-% 9:12, 1:4
-(i-1)*4+1
 for i = 1:512
     i_index = (i-1)*4+1;
     i_stop = i*4;
@@ -20,9 +16,9 @@ for i = 1:512
         superpixel = cuberead(j_index:j_stop, i_index:i_stop);
         for k = 1:16
             newpixel = superpixel*TransforMatrix(:, :, k);
-            channel = sum(sum(newpixel));
-            Wallace(j, i, k) = channel;
+            channel = sum(sum(superpixel));
+            Wallace(j, i, k) = channel; % can we please think of a better name for this array than Wallace
+%             radiance correction?
         end
-%          blah blah blah transformation blah blah
     end
 end
