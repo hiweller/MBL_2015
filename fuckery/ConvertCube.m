@@ -19,7 +19,7 @@ for i = 1:length(imagedir);
     figure(i);
     
     for j = 1:4
-        for k = 1:4 
+        for tk = 1:4 
             subaxis(4,4,k+4*(j-1), 'Spacing', 0.01); % plot all 16 channels in one figure
             ch_unflip = (cuberead(j:4:2048, k:4:2048)); % 512x512 grid of 4x4 squares containing pixels for each channel
             ch = flip(ch_unflip, 2); % image inverted
