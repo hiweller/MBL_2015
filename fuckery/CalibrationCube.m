@@ -2,6 +2,7 @@
 
 DeconMat = cell2mat(textscan(fopen('deconvolution.txt'), '%f'));
 
+cuberead = fread(fopen('filename'), [2048 2048], 'uint16')
 for i = 1:16
     index = DeconMat(((i-1)*16+1):(i*16));
     TransforMatrix(:, :, i) = vec2mat(index, 4);

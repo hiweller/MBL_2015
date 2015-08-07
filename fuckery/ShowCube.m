@@ -1,10 +1,10 @@
-function ShowCube(Date)
+function ShowCube(Flounder)
 % shows ch 1 image without saving/sorting any files
 % for use in checking image w/o processing
 % should be in the directory
 % ex: ShowCube('Jul31')
 
-imagedir = dir(['../', Date, '/*.3d']);
+imagedir = dir([Flounder, '/*.3d']);
 
 for i = 1:length(imagedir)
     cuberead = fread(fopen(imagedir(i).name), [2048 2048], 'uint16');
@@ -17,3 +17,6 @@ for i = 1:length(imagedir)
 end
 
 end
+
+
+
