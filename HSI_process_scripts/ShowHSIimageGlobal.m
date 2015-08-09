@@ -1,10 +1,10 @@
-function ShowHSIimageGlobal(Date, Directory, ExpTime)
+function ShowHSIimageGlobal(Date, Directory)
 % Example: ShowHSIimageGlobal('Aug6','2014-08-06-14hr25min40sec',1.3)
 
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
 for i = 1:16
-    filename = [Date,'/',Directory,'/',Directory,'_',sprintf('%0.2f',ExpTime),'ms_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
+    filename = [Date,'/',Directory,'/',Directory, '_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
     Img(:,:,i) = imread(filename,'tiff');
 end
 
