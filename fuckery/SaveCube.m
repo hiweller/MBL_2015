@@ -22,22 +22,3 @@ for i = 1:length(flounderdir)
 end
 
 end
-% imagedir = dir([Date, '/*.3d']);
-% 
-% for i = 1:length(imagedir)
-%     cuberead = fread(fopen(imagedir(i).name), [2048 2048], 'uint16');
-%     figure;
-%     ch_unflip = cuberead(1:4:2048, 1:4:2048);
-%     ch = flip(ch_unflip, 2);
-%     mrmaximum = max(max(ch));
-%     imshow(ch, [0 mrmaximum]);
-%     title(imagedir(i).name);
-%     export_fig(imagedir(i).name);
-% end
-% 
-% end
-% 
-% flounderdir = dir([Date, '/JuvFlounder #*/']);
-% for i = 1:length(flounderdir)
-%     ShowCube(flounderdir(i).name);
-% end
