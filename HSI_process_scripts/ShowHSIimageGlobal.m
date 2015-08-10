@@ -19,10 +19,10 @@ ScaledImgRGB = ImgRGB*sc;
 figure
 imshow(ScaledImgRGB);
 
-Output_filename = [Date,'/',Directory,'/',Directory,'_','global_all'];
+Output_filename = sprintf('%s%s%s', Directory,'_','global_all');
 save(Output_filename, 'Img');
 % 
 Scaled256ImgRGB = uint8(ScaledImgRGB/256);
-Output_filename_img = [Date,'/',Directory,'/',Directory,'_global_RGB.tiff'];
+Output_filename_img = [Directory,'_global_RGB.tiff'];
 imwrite(Scaled256ImgRGB, Output_filename_img, 'tiff');
 end

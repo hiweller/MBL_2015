@@ -1,5 +1,4 @@
 % script to pull out all the HSI data cubes ranked 4 and 5
-% currently not pulling out the whites. maybe i should do that
 
 % read rankings file into matlab
 [num, txt, raw] = xlsread('HSI Rankings.xlsx', 'A1:C493');
