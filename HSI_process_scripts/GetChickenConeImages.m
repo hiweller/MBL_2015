@@ -11,6 +11,8 @@ ImgFilename = [DataPath, 'HSIData/', DateImg,'/',DirImg,'_Global_Ref'];
 LightFilename = [DataPath, 'SpecData/',DateLight,'/LightField',num2str(LightNum)];
 RefObjectImg = importdata(ImgFilename, 1);
 load(LightFilename);
+
+
 % load doesn't seem to be working (returns "unknown text on line 1" error),
 % replacing with importdata?
 % load(ImgFilename);
@@ -27,7 +29,7 @@ for i = 1:16
     inx2 = find(inx_nan == 1);
     TempImg(inx2) = 0; % make reflectance NaN (because of noise) equal 0
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
-    subaxis(4,4,i, 'Spacing', 0.01), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
+    subaxis(4,4,i, 'Spacing', 0.02), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
     
 end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
@@ -99,6 +101,10 @@ DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_
 
 figure
 imshow(DconeAdpNorm); title('Double cone');
+
+% export_fig([Date, '/', flounderdir(i).name, '/', imagedir(j).name]);
+
+export_fig('Chicken_DCimg_up.tiff');
 % if LightDirection == 1
 %     OutFilename = ['Chicken_DCimg_up.tiff'];
 %     imwrite(DconeAdpNorm,OutFilename, 'tiff');
@@ -132,6 +138,8 @@ Dcone_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)
 
 figure
 imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
+
+export_fig('Chicken_DCimg_LoG_up.tiff');
 % if LightDirection == 1
 %     OutFilename = [DateImg,'/',DirImg,'/Chicken_DCimg_LoG_up.tiff'];
 %     imwrite(Dcone_img,OutFilename,'tiff');
@@ -144,10 +152,10 @@ LUSimg(:,:,1) = LconeAdpNorm; LUSimg(:,:,2) = UconeAdpNorm; LUSimg(:,:,3) = Scon
 LMUimg(:,:,1) = LconeAdpNorm; LMUimg(:,:,2) = MconeAdpNorm; LMUimg(:,:,3) = UconeAdpNorm;
 
 figure
-subplot(2,2,1), imshow(UconeAdpNorm); title('UV cone');
-subplot(2,2,2), imshow(SconeAdpNorm); title('S cone');
-subplot(2,2,3), imshow(MconeAdpNorm); title('M cone');
-subplot(2,2,4), imshow(LconeAdpNorm); title('L cone');
+subaxis(2,2,1, 'Spacing', 0.02), imshow(UconeAdpNorm); title('UV cone');
+subaxis(2,2,2, 'Spacing', 0.02), imshow(SconeAdpNorm); title('S cone');
+subaxis(2,2,3, 'Spacing', 0.02), imshow(MconeAdpNorm); title('M cone');
+subaxis(2,2,4, 'Spacing', 0.02), imshow(LconeAdpNorm); title('L cone');
 
 figure
 subplot(2,2,1), imshow(LMSimg); title('LMS');
@@ -155,13 +163,14 @@ subplot(2,2,2), imshow(UMSimg); title('UMS');
 subplot(2,2,3), imshow(LUSimg); title('LUS');
 subplot(2,2,4), imshow(LMUimg); title('LMU');
 
-if LightDirection == 1
-    OutFilename1 = [DateImg,'/',DirImg,'/Chicken_LMSimg_up.tiff']; imwrite(LMSimg,OutFilename1,'tiff');
-    OutFilename2 = [DateImg,'/',DirImg,'/Chicken_UMSimg_up.tiff']; imwrite(UMSimg,OutFilename2,'tiff');
-    OutFilename3 = [DateImg,'/',DirImg,'/Chicken_LUSimg_up.tiff']; imwrite(LUSimg,OutFilename3,'tiff');
-    OutFilename4 = [DateImg,'/',DirImg,'/Chicken_LMUimg_up.tiff']; imwrite(LMUimg,OutFilename4,'tiff');
-else
-end
+export_fig('Chicken_LMSetc_img_up.tiff');
+% if LightDirection == 1
+%     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_LMSimg_up.tiff']; imwrite(LMSimg,OutFilename1,'tiff');
+%     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_UMSimg_up.tiff']; imwrite(UMSimg,OutFilename2,'tiff');
+%     OutFilename3 = [DateImg,'/',DirImg,'/Chicken_LUSimg_up.tiff']; imwrite(LUSimg,OutFilename3,'tiff');
+%     OutFilename4 = [DateImg,'/',DirImg,'/Chicken_LMUimg_up.tiff']; imwrite(LMUimg,OutFilename4,'tiff');
+% else
+% end
 
 IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 IsoSconeAdpNorm = SconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
@@ -179,13 +188,14 @@ subplot(2,2,2), imshow(IsoUMSimg); title('Iso-UMS');
 subplot(2,2,3), imshow(IsoLUSimg); title('Iso-LUS');
 subplot(2,2,4), imshow(IsoLMUimg); title('Iso-LMU');
 
-if LightDirection == 1
-    OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoLMSimg_up.tiff']; imwrite(IsoLMSimg,OutFilename1,'tiff');
-    OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoUMSimg_up.tiff']; imwrite(IsoUMSimg,OutFilename2,'tiff');
-    OutFilename3 = [DateImg,'/',DirImg,'/Chicken_IsoLUSimg_up.tiff']; imwrite(IsoLUSimg,OutFilename3,'tiff');
-    OutFilename4 = [DateImg,'/',DirImg,'/Chicken_IsoLMUimg_up.tiff']; imwrite(IsoLMUimg,OutFilename4,'tiff');
-else
-end
+export_fig('Chicken_IsoLMSetc_up.tiff');
+% if LightDirection == 1
+%     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoLMSimg_up.tiff']; imwrite(IsoLMSimg,OutFilename1,'tiff');
+%     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoUMSimg_up.tiff']; imwrite(IsoUMSimg,OutFilename2,'tiff');
+%     OutFilename3 = [DateImg,'/',DirImg,'/Chicken_IsoLUSimg_up.tiff']; imwrite(IsoLUSimg,OutFilename3,'tiff');
+%     OutFilename4 = [DateImg,'/',DirImg,'/Chicken_IsoLMUimg_up.tiff']; imwrite(IsoLMUimg,OutFilename4,'tiff');
+% else
+% end
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 img1=edge_Otsu(IsoUconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
@@ -285,7 +295,7 @@ subplot(2,2,1), imshow(IsoUconeEdge_img); title('Iso U-cone');
 subplot(2,2,2), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subplot(2,2,3), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subplot(2,2,4), imshow(IsoLconeEdge_img); title('Iso L-cone');
-
+export_fig('Chicken_IsoUSMLcones_LoG_up.tiff');
 % if LightDirection == 1
 %     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoUcone_LoG_up.tiff']; imwrite(IsoUconeEdge_img,OutFilename1,'tiff');
 %     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoScone_LoG_up.tiff']; imwrite(IsoSconeEdge_img,OutFilename2,'tiff');
