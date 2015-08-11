@@ -31,7 +31,7 @@ imshow(ImgRGB);
 
 Output_filename = [ObjectDirectory,'_Global_Ref'];
 save(Output_filename, 'RefObjectImg');
-
+movefile(Output_filename, ['/Users/hannah/Flounder Project/Data/HSIData/', Date, '/', ObjectDirectory]);
 Output_filename_img = [ObjectDirectory,'_Global_Ref.jpg'];
 imwrite(ImgRGB, Output_filename_img, 'jpeg'); 
 

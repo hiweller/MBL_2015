@@ -16,7 +16,9 @@ end
 
 for i = 1:size_a;
     figure
-    title(['Measurement number: ' num2str(i)]);
+    title(['Spectrometer measurement number: ' num2str(i)]);
+    xlabel('Wavelength (nm)');
+    ylabel('Photons/cm^2/nm/sec');
     for j = 1:5 
         hold all;
         plot(wl,Spec_ch_all(i,101:401,j));

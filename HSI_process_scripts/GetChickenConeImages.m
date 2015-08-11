@@ -1,5 +1,15 @@
-function GetChickenConeImages(DateImg,DirImg,DateLight,LightNum,LightDirection)
-% Example: GetChickenConeImages('Aug21','2014-08-21-10hr36min06sec-HLgain','Aug7',1,1)
+function GetChickenConeImages(DateImg,FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+
+
+% directory structure:
+% MainDir (includes .dat cone files)
+% always start in same MainDir
+% /Date/FlounderNum/Substrate/Global_Ref_File
+% ex: DateImg = 'Aug06'
+% FlounderNum = 1
+% Substrate = 'Gravel'
+% DirImg = 'some giant string of numbers'
+
 % LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
 
 load Chicken4Cones.dat; % 4x16 (UV,S,M,L)
@@ -7,7 +17,8 @@ load ChickenDoubleCone.dat; % 1x16
 Chicken4Cones = Chicken4Cones/100; % make sensitivity range from 0 to 1
 
 DataPath = '/Users/hannah/Documents/Hanlon Lab/Flounder Project/Data/';
-ImgFilename = [DataPath, 'HSIData/', DateImg,'/',DirImg,'_Global_Ref'];
+
+ImgFilename = [Date, '/JuvFlounder #/', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
 LightFilename = [DataPath, 'SpecData/',DateLight,'/LightField',num2str(LightNum)];
 RefObjectImg = importdata(ImgFilename, 1);
 load(LightFilename);
@@ -104,7 +115,7 @@ imshow(DconeAdpNorm); title('Double cone');
 
 % export_fig([Date, '/', flounderdir(i).name, '/', imagedir(j).name]);
 
-export_fig('Chicken_DCimg_up.tiff');
+export_fig([DirImg, '_Chicken_DCimg_up.tiff']);
 % if LightDirection == 1
 %     OutFilename = ['Chicken_DCimg_up.tiff'];
 %     imwrite(DconeAdpNorm,OutFilename, 'tiff');
@@ -139,13 +150,14 @@ Dcone_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)
 figure
 imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig('Chicken_DCimg_LoG_up.tiff');
+export_fig([DirImg, 'Chicken_DCimg_LoG_up.tiff']);
 % if LightDirection == 1
 %     OutFilename = [DateImg,'/',DirImg,'/Chicken_DCimg_LoG_up.tiff'];
 %     imwrite(Dcone_img,OutFilename,'tiff');
 % else
 % end
 
+% trying out "LMS" (RGB) and "MSU" (false color) images
 LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 UMSimg(:,:,1) = UconeAdpNorm; UMSimg(:,:,2) = MconeAdpNorm; UMSimg(:,:,3) = SconeAdpNorm;
 LUSimg(:,:,1) = LconeAdpNorm; LUSimg(:,:,2) = UconeAdpNorm; LUSimg(:,:,3) = SconeAdpNorm; 
@@ -158,12 +170,12 @@ subaxis(2,2,3, 'Spacing', 0.02), imshow(MconeAdpNorm); title('M cone');
 subaxis(2,2,4, 'Spacing', 0.02), imshow(LconeAdpNorm); title('L cone');
 
 figure
-subplot(2,2,1), imshow(LMSimg); title('LMS');
-subplot(2,2,2), imshow(UMSimg); title('UMS');
-subplot(2,2,3), imshow(LUSimg); title('LUS');
-subplot(2,2,4), imshow(LMUimg); title('LMU');
+subaxis(2,2,1, 'Spacing', 0.02), imshow(LMSimg); title('LMS');
+subaxis(2,2,2, 'Spacing', 0.02), imshow(UMSimg); title('UMS');
+subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
+subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
 
-export_fig('Chicken_LMSetc_img_up.tiff');
+export_fig([DirImg, 'Chicken_LMSetc_img_up.tiff']);
 % if LightDirection == 1
 %     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_LMSimg_up.tiff']; imwrite(LMSimg,OutFilename1,'tiff');
 %     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_UMSimg_up.tiff']; imwrite(UMSimg,OutFilename2,'tiff');
@@ -183,12 +195,12 @@ IsoLUSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,2) = (IsoUconeAdpN
 IsoLMUimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
 
 figure
-subplot(2,2,1), imshow(IsoLMSimg); title('Iso-LMS');
-subplot(2,2,2), imshow(IsoUMSimg); title('Iso-UMS');
-subplot(2,2,3), imshow(IsoLUSimg); title('Iso-LUS');
-subplot(2,2,4), imshow(IsoLMUimg); title('Iso-LMU');
+subaxis(2,2,1, 'Spacing', 0.02), imshow(IsoLMSimg); title('Iso-LMS');
+subaxis(2,2,2, 'Spacing', 0.02), imshow(IsoUMSimg); title('Iso-UMS');
+subaxis(2,2,3, 'Spacing', 0.02), imshow(IsoLUSimg); title('Iso-LUS');
+subaxis(2,2,4, 'Spacing', 0.02), imshow(IsoLMUimg); title('Iso-LMU');
 
-export_fig('Chicken_IsoLMSetc_up.tiff');
+export_fig([DirImg, 'Chicken_IsoLMSetc_up.tiff']);
 % if LightDirection == 1
 %     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoLMSimg_up.tiff']; imwrite(IsoLMSimg,OutFilename1,'tiff');
 %     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoUMSimg_up.tiff']; imwrite(IsoUMSimg,OutFilename2,'tiff');
@@ -291,11 +303,11 @@ imgp10 = img10 & img11;
 IsoLconeEdge_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
 
 figure
-subplot(2,2,1), imshow(IsoUconeEdge_img); title('Iso U-cone');
-subplot(2,2,2), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
-subplot(2,2,3), imshow(IsoMconeEdge_img); title('Iso M-cone');
-subplot(2,2,4), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig('Chicken_IsoUSMLcones_LoG_up.tiff');
+subaxis(2,2,1, 'Spacing', 0.02), imshow(IsoUconeEdge_img); title('Iso U-cone');
+subaxis(2,2,2, 'Spacing', 0.02), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
+subaxis(2,2,3, 'Spacing', 0.02), imshow(IsoMconeEdge_img); title('Iso M-cone');
+subaxis(2,2,4, 'Spacing', 0.02), imshow(IsoLconeEdge_img); title('Iso L-cone');
+export_fig([DirImg, 'Chicken_IsoUSMLcones_LoG_up.tiff']);
 % if LightDirection == 1
 %     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoUcone_LoG_up.tiff']; imwrite(IsoUconeEdge_img,OutFilename1,'tiff');
 %     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoScone_LoG_up.tiff']; imwrite(IsoSconeEdge_img,OutFilename2,'tiff');
