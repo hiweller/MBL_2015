@@ -143,8 +143,8 @@ export_fig([FlounDir, 'Chicken_DCimg_LoG_up.tiff']);
 
 % trying out "LMS" (RGB) and "MSU" (false color) images
 LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
-MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = UconeAdpNorm;
-% UMSimg(:,:,1) = UconeAdpNorm; UMSimg(:,:,2) = MconeAdpNorm; UMSimg(:,:,3) = SconeAdpNorm;
+MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUm
+UMSimg(:,:,1) = UconeAdpNorm; UMSimg(:,:,2) = MconeAdpNorm; UMSimg(:,:,3) = SconeAdpNorm;
 % LUSimg(:,:,1) = LconeAdpNorm; LUSimg(:,:,2) = UconeAdpNorm; LUSimg(:,:,3) = SconeAdpNorm; 
 % LMUimg(:,:,1) = LconeAdpNorm; LMUimg(:,:,2) = MconeAdpNorm; LMUimg(:,:,3) = UconeAdpNorm;
 
@@ -156,11 +156,11 @@ subaxis(2,2,4, 'Spacing', 0.02), imshow(LconeAdpNorm); title('L cone');
 
 figure
 subaxis(2,2,1, 'Spacing', 0.02), imshow(LMSimg); title('LMS');
-subaxis(2,2,2, 'Spacing', 0.02), imshow(MSUimg); title('MSU');
-% subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
-% subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
+subaxis(2,2,2, 'Spacing', 0.02), imshow(UMSimg); title('UMS');
+subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
+subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
 
-% export_fig([FlounDir, 'Chicken_LMSetc_img_up.tiff']);
+export_fig([FlounDir, 'Chicken_LMSetc_img_up.tiff']);
 % if LightDirection == 1
 %     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_LMSimg_up.tiff']; imwrite(LMSimg,OutFilename1,'tiff');
 %     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_UMSimg_up.tiff']; imwrite(UMSimg,OutFilename2,'tiff');

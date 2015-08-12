@@ -1,10 +1,9 @@
-% F3SAND
-
 function GetReflectanceGlobal(Date, FlounderNum, Substrate, ObjectDirectory, WhiteDirectory)
 % writes Global_Ref image to HSIData/ConeImages/FlounderNum/Substrate
 % writes jpg to folder with tiffs in it
 % start in folder with dates in it
-% Example: GetReflectanceGlobal('Aug06', 1, 'Gravel', longstringonumbers, otherstringonumbers)
+% Example: GetReflectanceGlobal('Aug06', 1, 'Gravel', longstringonumbers,
+% otherstringonumbers)
 
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
