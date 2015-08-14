@@ -1,22 +1,13 @@
 function GetChickenConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
-
-
-% directory structure:
-% MainDir (includes .dat cone files)
-% always start in same MainDir
-% HSIData/MainDir/FlounderNum/Substrate/Global_Ref_File
-% ex: DateImg = 'Aug06'
-% FlounderNum = 1
-% Substrate = 'Gravel'
-% DirImg = 'some giant string of numbers'
+% ConeImages/FlounderNum/Substrate/Global_Ref_File
+% always start in ConeImages!
+% GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
 
 % LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
 
-load Chicken4Cones.dat; % 4x16 (UV,S,M,L)
-load ChickenDoubleCone.dat; % 1x16
-Chicken4Cones = Chicken4Cones/100; % make sensitivity range from 0 to 1
-
-% DataPath = '/Users/hannah/Documents/Hanlon Lab/Flounder Project/Data/';
+% load .dat file (should be in ConeImages)
+load Chicken4Cones.dat % 4x16 (UV, S, M, L)
+load ChickenDoubleCone.dat %1x16
 
 ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
 LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
@@ -25,28 +16,26 @@ load(LightFilename);
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
+% plot 16 channels individually
 figure
 for i = 1:16
-     
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
-    TempImg(inx1) = 1; % make reflectance larger than one equal 1 
-    inx_nan = isnan(TempImg); % find NaN in the image file
-    inx2 = find(inx_nan == 1);
-    TempImg(inx2) = 0; % make reflectance NaN (because of noise) equal 0
+    TempImg(inx1) = 1;% make reflectance larger than one equal 1 
+    TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
-    subaxis(4,4,i, 'Spacing', 0.02), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
-    
+    subaxis(4,4,i, 'Spacing', 0.03), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
 end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
+% get color information for Chicken cones
 for i = 1:16
-    Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Chicken4Cones(1,i); % use Up direction of light field
+    Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Chicken4Cones(1,i);
     Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Chicken4Cones(2,i);
     Mimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Chicken4Cones(3,i);
     Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Chicken4Cones(4,i);
-    Dimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*ChickenDoubleCone(i); % double cone
+    Dimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*ChickenDoubleCone(i);
 end
 
 Ucone = sum(Uimg,3); % summation across all wavelengths
@@ -113,28 +102,14 @@ FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Su
 export_fig([FlounDir, '_Chicken_DCimg_up.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
-img1=edge_Otsu(DconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
-img2=edge_Otsu(DconeAdpNorm,'log',[],1);
-img3=edge_Otsu(DconeAdpNorm,'log',[],1.5);
-img4=edge_Otsu(DconeAdpNorm,'log',[],2);
-img5=edge_Otsu(DconeAdpNorm,'log',[],2.5);
-img6=edge_Otsu(DconeAdpNorm,'log',[],3);
-img7=edge_Otsu(DconeAdpNorm,'log',[],3.5);
-img8=edge_Otsu(DconeAdpNorm,'log',[],4);
-img9=edge_Otsu(DconeAdpNorm,'log',[],4.5);
-img10=edge_Otsu(DconeAdpNorm,'log',[],5);
-img11=edge_Otsu(DconeAdpNorm,'log',[],5.5);
-imgp1 = img1 & img2;
-imgp2 = img2 & img3;
-imgp3 = img3 & img4;
-imgp4 = img4 & img5;
-imgp5 = img5 & img6;
-imgp6 = img6 & img7;
-imgp7 = img7 & img8;
-imgp8 = img8 & img9;
-imgp9 = img9 & img10;
-imgp10 = img10 & img11;
-Dcone_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
+for i = 1:11
+    img(:,:,i) = edge_Otsu(DconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+end
+for i = 1:10
+    imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
+end
+
+Dcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+imgp(:,:,6)+imgp(:,:,7)+imgp(:,:,8)+imgp(:,:,9)+imgp(:,:,10))./10;
 
 figure
 imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
@@ -149,156 +124,68 @@ MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = Ucon
 % LMUimg(:,:,1) = LconeAdpNorm; LMUimg(:,:,2) = MconeAdpNorm; LMUimg(:,:,3) = UconeAdpNorm;
 
 figure
-subaxis(2,2,1, 'Spacing', 0.02), imshow(UconeAdpNorm); title('UV cone');
-subaxis(2,2,2, 'Spacing', 0.02), imshow(SconeAdpNorm); title('S cone');
-subaxis(2,2,3, 'Spacing', 0.02), imshow(MconeAdpNorm); title('M cone');
-subaxis(2,2,4, 'Spacing', 0.02), imshow(LconeAdpNorm); title('L cone');
+subaxis(2,2,1, 'Spacing', 0.03), imshow(UconeAdpNorm); title('UV cone');
+subaxis(2,2,2, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
+subaxis(2,2,3, 'Spacing', 0.03), imshow(MconeAdpNorm); title('M cone');
+subaxis(2,2,4, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
+
 
 figure
-subaxis(2,2,1, 'Spacing', 0.02), imshow(LMSimg); title('LMS');
-subaxis(2,2,2, 'Spacing', 0.02), imshow(MSUimg); title('MSU');
+imshow(LMSimg); title('LMS');
+export_fig([FlounDir, 'Chicken_LMSimg.tiff']);
+
+figure
+imshow(MSUimg); title('MSU');
+export_fig([FlounDir, 'Chicken_MSUimg.tiff']);
+
 % subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
 % subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
 
-% export_fig([FlounDir, 'Chicken_LMSetc_img_up.tiff']);
-% if LightDirection == 1
-%     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_LMSimg_up.tiff']; imwrite(LMSimg,OutFilename1,'tiff');
-%     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_UMSimg_up.tiff']; imwrite(UMSimg,OutFilename2,'tiff');
-%     OutFilename3 = [DateImg,'/',DirImg,'/Chicken_LUSimg_up.tiff']; imwrite(LUSimg,OutFilename3,'tiff');
-%     OutFilename4 = [DateImg,'/',DirImg,'/Chicken_LMUimg_up.tiff']; imwrite(LMUimg,OutFilename4,'tiff');
-% else
-% end
+ConeNorm = (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 
-IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-IsoSconeAdpNorm = SconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-IsoMconeAdpNorm = MconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-IsoLconeAdpNorm = LconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
+IsoUconeAdpNorm = UconeAdpNorm - ConeNorm;
+IsoSconeAdpNorm = SconeAdpNorm - ConeNorm;
+IsoMconeAdpNorm = MconeAdpNorm - ConeNorm;
+IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 
 IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-IsoUMSimg(:,:,1) = (IsoUconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-IsoLUSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,2) = (IsoUconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-IsoLMUimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
+IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
+
+% IsoUMSimg(:,:,1) = (IsoUconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+% IsoLUSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,2) = (IsoUconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+% IsoLMUimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
 
 figure
-subaxis(2,2,1, 'Spacing', 0.02), imshow(IsoLMSimg); title('Iso-LMS');
-subaxis(2,2,2, 'Spacing', 0.02), imshow(IsoUMSimg); title('Iso-UMS');
-subaxis(2,2,3, 'Spacing', 0.02), imshow(IsoLUSimg); title('Iso-LUS');
-subaxis(2,2,4, 'Spacing', 0.02), imshow(IsoLMUimg); title('Iso-LMU');
+imshow(IsoLMSimg); title('Iso-LMS');
+export_fig([FlounDir, 'Chicken_IsoLMSimg.tiff']);
 
-export_fig([FlounDir, 'Chicken_IsoLMSetc_up.tiff']);
-% if LightDirection == 1
-%     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoLMSimg_up.tiff']; imwrite(IsoLMSimg,OutFilename1,'tiff');
-%     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoUMSimg_up.tiff']; imwrite(IsoUMSimg,OutFilename2,'tiff');
-%     OutFilename3 = [DateImg,'/',DirImg,'/Chicken_IsoLUSimg_up.tiff']; imwrite(IsoLUSimg,OutFilename3,'tiff');
-%     OutFilename4 = [DateImg,'/',DirImg,'/Chicken_IsoLMUimg_up.tiff']; imwrite(IsoLMUimg,OutFilename4,'tiff');
-% else
-% end
+figure
+imshow(IsoMSUimg); title('Iso-MSU');
+export_fig([FlounDir, 'Chicken_IsoMSUimg.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
-img1=edge_Otsu(IsoUconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
-img2=edge_Otsu(IsoUconeAdpNorm,'log',[],1);
-img3=edge_Otsu(IsoUconeAdpNorm,'log',[],1.5);
-img4=edge_Otsu(IsoUconeAdpNorm,'log',[],2);
-img5=edge_Otsu(IsoUconeAdpNorm,'log',[],2.5);
-img6=edge_Otsu(IsoUconeAdpNorm,'log',[],3);
-img7=edge_Otsu(IsoUconeAdpNorm,'log',[],3.5);
-img8=edge_Otsu(IsoUconeAdpNorm,'log',[],4);
-img9=edge_Otsu(IsoUconeAdpNorm,'log',[],4.5);
-img10=edge_Otsu(IsoUconeAdpNorm,'log',[],5);
-img11=edge_Otsu(IsoUconeAdpNorm,'log',[],5.5);
-imgp1 = img1 & img2;
-imgp2 = img2 & img3;
-imgp3 = img3 & img4;
-imgp4 = img4 & img5;
-imgp5 = img5 & img6;
-imgp6 = img6 & img7;
-imgp7 = img7 & img8;
-imgp8 = img8 & img9;
-imgp9 = img9 & img10;
-imgp10 = img10 & img11;
-IsoUconeEdge_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
 
-img1=edge_Otsu(IsoSconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
-img2=edge_Otsu(IsoSconeAdpNorm,'log',[],1);
-img3=edge_Otsu(IsoSconeAdpNorm,'log',[],1.5);
-img4=edge_Otsu(IsoSconeAdpNorm,'log',[],2);
-img5=edge_Otsu(IsoSconeAdpNorm,'log',[],2.5);
-img6=edge_Otsu(IsoSconeAdpNorm,'log',[],3);
-img7=edge_Otsu(IsoSconeAdpNorm,'log',[],3.5);
-img8=edge_Otsu(IsoSconeAdpNorm,'log',[],4);
-img9=edge_Otsu(IsoSconeAdpNorm,'log',[],4.5);
-img10=edge_Otsu(IsoSconeAdpNorm,'log',[],5);
-img11=edge_Otsu(IsoSconeAdpNorm,'log',[],5.5);
-imgp1 = img1 & img2;
-imgp2 = img2 & img3;
-imgp3 = img3 & img4;
-imgp4 = img4 & img5;
-imgp5 = img5 & img6;
-imgp6 = img6 & img7;
-imgp7 = img7 & img8;
-imgp8 = img8 & img9;
-imgp9 = img9 & img10;
-imgp10 = img10 & img11;
-IsoSconeEdge_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
+for i = 1:11
+    imgU(:,:,i) = edge_Otsu(IsoUconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+    imgS(:,:,i) = edge_Otsu(IsoSconeAdpNorm, 'log', [], (i/2));
+    imgM(:,:,i) = edge_Otsu(IsoMconeAdpNorm, 'log', [], (i/2));
+    imgL(:,:,i) = edge_Otsu(IsoLconeAdpNorm, 'log', [], (i/2));
+end
+for i = 1:10
+    imgpU(:,:,i) = imgU(:,:,i) & imgU(:,:,(i+1));
+    imgpS(:,:,i) = imgS(:,:,i) & imgS(:,:,(i+1));
+    imgpM(:,:,i) = imgM(:,:,i) & imgM(:,:,(i+1));
+    imgpL(:,:,i) = imgL(:,:,i) & imgL(:,:,(i+1));
+end
 
-img1=edge_Otsu(IsoMconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
-img2=edge_Otsu(IsoMconeAdpNorm,'log',[],1);
-img3=edge_Otsu(IsoMconeAdpNorm,'log',[],1.5);
-img4=edge_Otsu(IsoMconeAdpNorm,'log',[],2);
-img5=edge_Otsu(IsoMconeAdpNorm,'log',[],2.5);
-img6=edge_Otsu(IsoMconeAdpNorm,'log',[],3);
-img7=edge_Otsu(IsoMconeAdpNorm,'log',[],3.5);
-img8=edge_Otsu(IsoMconeAdpNorm,'log',[],4);
-img9=edge_Otsu(IsoMconeAdpNorm,'log',[],4.5);
-img10=edge_Otsu(IsoMconeAdpNorm,'log',[],5);
-img11=edge_Otsu(IsoMconeAdpNorm,'log',[],5.5);
-imgp1 = img1 & img2;
-imgp2 = img2 & img3;
-imgp3 = img3 & img4;
-imgp4 = img4 & img5;
-imgp5 = img5 & img6;
-imgp6 = img6 & img7;
-imgp7 = img7 & img8;
-imgp8 = img8 & img9;
-imgp9 = img9 & img10;
-imgp10 = img10 & img11;
-IsoMconeEdge_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
-
-img1=edge_Otsu(IsoLconeAdpNorm,'log',[],0.5); % adaptive thresholding (Otsu, 1979)
-img2=edge_Otsu(IsoLconeAdpNorm,'log',[],1);
-img3=edge_Otsu(IsoLconeAdpNorm,'log',[],1.5);
-img4=edge_Otsu(IsoLconeAdpNorm,'log',[],2);
-img5=edge_Otsu(IsoLconeAdpNorm,'log',[],2.5);
-img6=edge_Otsu(IsoLconeAdpNorm,'log',[],3);
-img7=edge_Otsu(IsoLconeAdpNorm,'log',[],3.5);
-img8=edge_Otsu(IsoLconeAdpNorm,'log',[],4);
-img9=edge_Otsu(IsoLconeAdpNorm,'log',[],4.5);
-img10=edge_Otsu(IsoLconeAdpNorm,'log',[],5);
-img11=edge_Otsu(IsoLconeAdpNorm,'log',[],5.5);
-imgp1 = img1 & img2;
-imgp2 = img2 & img3;
-imgp3 = img3 & img4;
-imgp4 = img4 & img5;
-imgp5 = img5 & img6;
-imgp6 = img6 & img7;
-imgp7 = img7 & img8;
-imgp8 = img8 & img9;
-imgp9 = img9 & img10;
-imgp10 = img10 & img11;
-IsoLconeEdge_img = double(imgp1+imgp2+imgp3+imgp4+imgp5+imgp6+imgp7+imgp8+imgp9+imgp10)./10;
+IsoUconeEdge_img = double(imgpU(:,:,1)+imgpU(:,:,2)+imgpU(:,:,3)+imgpU(:,:,4)+imgpU(:,:,5)+imgpU(:,:,6)+imgpU(:,:,7)+imgpU(:,:,8)+imgpU(:,:,9)+imgpU(:,:,10))./10;
+IsoSconeEdge_img = double(imgpS(:,:,1)+imgpS(:,:,2)+imgpS(:,:,3)+imgpS(:,:,4)+imgpS(:,:,5)+imgpS(:,:,6)+imgpS(:,:,7)+imgpS(:,:,8)+imgpS(:,:,9)+imgpS(:,:,10))./10;
+IsoMconeEdge_img = double(imgpM(:,:,1)+imgpM(:,:,2)+imgpM(:,:,3)+imgpM(:,:,4)+imgpM(:,:,5)+imgpM(:,:,6)+imgpM(:,:,7)+imgpM(:,:,8)+imgpM(:,:,9)+imgpM(:,:,10))./10;
+IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+imgpL(:,:,5)+imgpL(:,:,6)+imgpL(:,:,7)+imgpL(:,:,8)+imgpL(:,:,9)+imgpL(:,:,10))./10;
 
 figure
-subaxis(2,2,1, 'Spacing', 0.02), imshow(IsoUconeEdge_img); title('Iso U-cone');
-subaxis(2,2,2, 'Spacing', 0.02), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
-subaxis(2,2,3, 'Spacing', 0.02), imshow(IsoMconeEdge_img); title('Iso M-cone');
-subaxis(2,2,4, 'Spacing', 0.02), imshow(IsoLconeEdge_img); title('Iso L-cone');
+subaxis(2,2,1, 'Spacing', 0.03), imshow(IsoUconeEdge_img); title('Iso U-cone');
+subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
+subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
+subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 export_fig([FlounDir, 'Chicken_IsoUSMLcones_LoG_up.tiff']);
-% if LightDirection == 1
-%     OutFilename1 = [DateImg,'/',DirImg,'/Chicken_IsoUcone_LoG_up.tiff']; imwrite(IsoUconeEdge_img,OutFilename1,'tiff');
-%     OutFilename2 = [DateImg,'/',DirImg,'/Chicken_IsoScone_LoG_up.tiff']; imwrite(IsoSconeEdge_img,OutFilename2,'tiff');
-%     OutFilename3 = [DateImg,'/',DirImg,'/Chicken_IsoMcone_LoG_up.tiff']; imwrite(IsoMconeEdge_img,OutFilename3,'tiff');
-%     OutFilename4 = [DateImg,'/',DirImg,'/Chicken_IsoLcone_LoG_up.tiff']; imwrite(IsoLconeEdge_img,OutFilename4,'tiff');
-% else
-% end
-
-end
