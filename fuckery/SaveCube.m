@@ -4,7 +4,8 @@ function SaveCube(Date)
 % should be above the directory
 % ex: be in the directory containing the directory 'Jul21'
 
-flounderdir = dir([Date, '/JuvFlounder #*/']);
+% flounderdir = dir([Date, '/JuvFlounder #*/']);
+flounderdir = dir(Date);
 for i = 1:length(flounderdir)
     
     imagedir = dir([Date, '/', flounderdir(i).name, '/*.3d']);

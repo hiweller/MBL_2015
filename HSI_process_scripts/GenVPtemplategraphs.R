@@ -37,7 +37,7 @@ points(wavelength, birdmat[4,], type='l', col='red', lwd=3)
 
 
 # human
-human <- c(437, 533, 564)
+human <- c(465, 550, 580)
 humanmat <- matrix(NA, nrow=length(human), ncol=501)
 for (i in 1:length(human)) {
   humanmat[i,] <- GenVPtemplate(human[i])
@@ -49,17 +49,19 @@ plot(wavelength, humanmat[1,], type='l',col='blue',
 points(wavelength, humanmat[2,], type='l', col='green', lwd=3)
 points(wavelength, humanmat[3,], type='l', col='red', lwd=3)
 
-# dichromatic fish
-difish <- c(450, 545)
-difishmat <- matrix(NA, nrow=length(difish), ncol=501)
-for (i in 1:length(difish)) {
-  difishmat[i,] <- GenVPtemplate(difish[i])
+# multichromatic fish
+multifish <- c(400, 450, 530, 560)
+multifishmat <- matrix(NA, nrow=length(multifish), ncol=501)
+for (i in 1:length(multifish)) {
+  multifishmat[i,] <- GenVPtemplate(multifish[i])
 }
-plot(wavelength, difishmat[1,], type='l', col='blue',
+plot(wavelength, multifishmat[1,], type='l', col='purple',
      xlab='Wavelength (nm)', ylab='Relative sensitivity',
-     main='Fish vision (dichromatic)',
-     cex.main=1.8, cex.lab=0.8, cex.axis=0.8, lwd=3)
-points(wavelength, difishmat[2,], type='l', col='green', lwd=3)
+     main='Fish vision (di-, tri-, or tetrachromatic)',
+     cex.main=1.8, cex.lab=0.8, cex.axis=0.8, lty=2, lwd=3)
+points(wavelength, multifishmat[2,], type='l', col='blue', lwd=3)
+points(wavelength, multifishmat[3,], type='l', col='green', lwd=3)
+points(wavelength, multifishmat[4,], type='l', col='red', lty=2, lwd=3)
 
 # trichromatic fish
 # trifish <- c(450, 530, 560)

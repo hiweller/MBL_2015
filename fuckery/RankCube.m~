@@ -13,18 +13,6 @@ folderID = sprintf('%s%s%s', Horatio{1}, '/', Horatio{2});
 mkdir(['Highlights/', folderID]);
 for i = 2:length(raw(:,1))
     
-    filename = raw{i, 1};
-    
-    if strcmp(raw{i,3}, 'WHITE') == 1
-        copyfile(filename, 'WHITE')
-    else
-        folderID = sprintf('%s%s', 'JuvFlounder #', num2str(raw{i, 3}));
-        if raw{i, 2} == 4 | raw{i, 2} == 5
-            copyfile(filename, folderID);
-        end
-    end
-end
-    
     % pull out row name ( = filepath)
     filename = raw{i, 1};
     foldername = raw{i, 3};
@@ -55,17 +43,13 @@ end
     
 %     Source = sprintf('%s%s%s', folderID, '/', CubeID);
 
-    if newfolderID == 'WHITE'
-        copyfile(filename, 'WHITE/');
-    else
-        if raw{i,2} == 4 | raw{i,2} == 5
-            copyfile(filename, newfolderID)
-%     if raw{i, 2} == 4 | raw{i, 2} == 5
-%         copyfile(filename, newfolderID);
-%     end
-%     if raw{i, 2} == 'WHITE'
-%         copyfile(filename, newfolderID);
-%     end
+    
+    if raw{i, 2} == 4 | raw{i, 2} == 5
+        copyfile(filename, newfolderID);
+    end
+    if raw{i, 2} == 'WHITE'
+        copyfile(filename, newfolderID);
+    end
     
 end
 
