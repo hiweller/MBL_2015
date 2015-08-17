@@ -1,4 +1,4 @@
-function GetBuzzardConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+function GetBluefishConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
@@ -6,8 +6,7 @@ function GetBuzzardConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,Li
 % LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
 
 % load .dat file (should be in ConeImages)
-load Buzzard4Cones.dat % 4x16 (UV, S, M, L)
-load ChickenDoubleCone.dat %1x16
+load Bluefish4Cones.dat % 4x16 (UV, S, M, L)
 
 ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
 LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
@@ -31,18 +30,16 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 
 % get color information for buzzard cones
 for i = 1:16
-    Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Buzzard4Cones(1,i);
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Buzzard4Cones(2,i);
-    Mimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Buzzard4Cones(3,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Buzzard4Cones(4,i);
-    Dimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*ChickenDoubleCone(i);
+    Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(1,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(2,i);
+    Mimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(3,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(4,i);
 end
 
 Ucone = sum(Uimg,3); % summation across all wavelengths
 Scone = sum(Simg,3);
 Mcone = sum(Mimg,3);
 Lcone = sum(Limg,3);
-Dcone = sum(Dimg,3);
 
 for i = 1:16
     Background(i) = mean2(RefObjectImg(:,:,i)); % average all reflectance spectra across the entire image
@@ -52,21 +49,18 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    U_bk(i) = Background(i)*LightField(LightDirection,i)*Buzzard4Cones(1,i); 
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Buzzard4Cones(2,i);
-    M_bk(i) = Background(i)*LightField(LightDirection,i)*Buzzard4Cones(3,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Buzzard4Cones(4,i);
-    D_bk(i) = Background(i)*LightField(LightDirection,i)*ChickenDoubleCone(i);
-    U_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(1,i); 
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(2,i);
-    M_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(3,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(4,i);
-    D_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*ChickenDoubleCone(i);
-    U_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(1,i); 
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(2,i);
-    M_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(3,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Buzzard4Cones(4,i);
-    D_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*ChickenDoubleCone(i);
+    U_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
+    S_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
+    M_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
+    L_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
+    U_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
+    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
+    M_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
+    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
+    U_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
+    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
+    M_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
+    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -78,50 +72,43 @@ inxM = find(Mcone == 0);
 Mcone(inxM) = sum(M_Black);
 inxL = find(Lcone == 0);
 Lcone(inxL) = sum(L_Black);
-inxD = find(Dcone == 0);
-Dcone(inxD) = sum(D_Black);
 
 UconeAdp = log(Ucone/sum(U_bk)); % adapted to background and log-transformed (Ln)
 SconeAdp = log(Scone/sum(S_bk)); 
 MconeAdp = log(Mcone/sum(M_bk)); 
-LconeAdp = log(Lcone/sum(L_bk)); 
-DconeAdp = log(Dcone/sum(D_bk)); 
+LconeAdp = log(Lcone/sum(L_bk));  
 
 % normalized to a range from 0 to 1 (for display purpose), using black and white surfaces
 UconeAdpNorm = (UconeAdp - log(sum(U_Black)/sum(U_bk)))/(log(sum(U_White)/sum(U_bk)) - log(sum(U_Black)/sum(U_bk)));
 SconeAdpNorm = (SconeAdp - log(sum(S_Black)/sum(S_bk)))/(log(sum(S_White)/sum(S_bk)) - log(sum(S_Black)/sum(S_bk)));
 MconeAdpNorm = (MconeAdp - log(sum(M_Black)/sum(M_bk)))/(log(sum(M_White)/sum(M_bk)) - log(sum(M_Black)/sum(M_bk)));
 LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_bk)) - log(sum(L_Black)/sum(L_bk)));
-DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_bk)) - log(sum(D_Black)/sum(D_bk)));
 
 figure
-imshow(DconeAdpNorm); title('Double cone');
+imshow(LconeAdpNorm); title('Double cone');
 
 FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
 
-export_fig([FlounDir, '_Buzzard_DCimg_up.tiff']);
+export_fig([FlounDir, '_Bluefish_DCimg_up.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
-    img(:,:,i) = edge_Otsu(DconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+    img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
 end
 for i = 1:10
     imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
 end
 
-Dcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+imgp(:,:,6)+imgp(:,:,7)+imgp(:,:,8)+imgp(:,:,9)+imgp(:,:,10))./10;
+Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+imgp(:,:,6)+imgp(:,:,7)+imgp(:,:,8)+imgp(:,:,9)+imgp(:,:,10))./10;
 
 figure
-imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
+imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_Buzzard_DCimg_LoG_up.tiff']);
+export_fig([FlounDir, '_Bluefish_DCimg_LoG_up.tiff']);
 
 % trying out "LMS" (RGB) and "MSU" (false color) images
 LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = UconeAdpNorm;
-% UMSimg(:,:,1) = UconeAdpNorm; UMSimg(:,:,2) = MconeAdpNorm; UMSimg(:,:,3) = SconeAdpNorm;
-% LUSimg(:,:,1) = LconeAdpNorm; LUSimg(:,:,2) = UconeAdpNorm; LUSimg(:,:,3) = SconeAdpNorm; 
-% LMUimg(:,:,1) = LconeAdpNorm; LMUimg(:,:,2) = MconeAdpNorm; LMUimg(:,:,3) = UconeAdpNorm;
 
 figure
 subaxis(2,2,1, 'Spacing', 0.03), imshow(UconeAdpNorm); title('UV cone');
@@ -132,14 +119,11 @@ subaxis(2,2,4, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
 
 figure
 imshow(LMSimg); title('LMS');
-export_fig([FlounDir, '_Buzzard_LMSimg.tiff']);
+export_fig([FlounDir, '_Bluefish_LMSimg.tiff']);
 
 figure
 imshow(MSUimg); title('MSU');
-export_fig([FlounDir, '_Buzzard_MSUimg.tiff']);
-
-% subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
-% subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
+export_fig([FlounDir, '_Bluefish_MSUimg.tiff']);
 
 ConeNorm = (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 
@@ -151,17 +135,13 @@ IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
 IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
 
-% IsoUMSimg(:,:,1) = (IsoUconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-% IsoLUSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,2) = (IsoUconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-% IsoLMUimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
-
 figure
 imshow(IsoLMSimg); title('Iso-LMS');
-export_fig([FlounDir, '_Buzzard_IsoLMSimg.tiff']);
+export_fig([FlounDir, '_Bluefish_IsoLMSimg.tiff']);
 
 figure
 imshow(IsoMSUimg); title('Iso-MSU');
-export_fig([FlounDir, '_Buzzard_IsoMSUimg.tiff']);
+export_fig([FlounDir, '_Bluefish_IsoMSUimg.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
@@ -188,6 +168,6 @@ subaxis(2,2,1, 'Spacing', 0.03), imshow(IsoUconeEdge_img); title('Iso U-cone');
 subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_Buzzard_IsoUSMLcones_LoG_up.tiff']);
+export_fig([FlounDir, '_Bluefish_IsoUSMLcones_LoG_up.tiff']);
 
 end
