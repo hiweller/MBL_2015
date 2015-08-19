@@ -36,7 +36,7 @@ directoryRead = dir(['../',Date, '/*.tiff']);
 directoryRead = directoryRead(arrayfun(@(x)x.name(1), directoryRead) ~='.'); %remove hidden files
 
 FileID = directoryRead(1).name(1:18);
-FolderID = directoryRead(1).name(1:(end-15));
+FolderID = directoryRead(1).name(1:(end-18));
 mkdir(FolderID);
 
 for i = 1:length(directoryRead)
@@ -44,8 +44,8 @@ for i = 1:length(directoryRead)
         movefile(directoryRead(i).name, FolderID);
     else
         FileID = directoryRead(i).name(1:18);
-        FolderID = directoryRead(i).name(1:(end-15));
-        mkdir(directoryRead(i).name(1:(end-15)));
+        FolderID = directoryRead(i).name(1:(end-18));
+        mkdir(directoryRead(i).name(1:(end-18)));
         movefile(directoryRead(i).name, FolderID);
     end
 end
