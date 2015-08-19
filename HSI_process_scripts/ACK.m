@@ -58,6 +58,15 @@ Fish2Cones = Fish2Cones/norm(Fish2Cones, Inf);
 dlmwrite('Fish2Cones.dat', Fish2Cones);
 
 
+SummerFlounderCones = [449, 525];
+for i = 1:length(SummerFlounderCones)
+    Paralichthys2Cones(i,:) = GenVPtemplate(SummerFlounderCones(i));
+end
+Paralichthys2Cones = Paralichthys2Cones(:, RefNumber);
+Paralichthys2Cones = Paralichthys2Cones/norm(Paralichthys2Cones, Inf);
+dlmwrite('Paralichthys2Cones.dat', Paralichthys2Cones);
+
+
 BluefishCones = [433, 438, 507, 547];
 for i = 1:length(BluefishCones)
     Bluefish4Cones(i,:) = GenVPtemplate(BluefishCones(i));
