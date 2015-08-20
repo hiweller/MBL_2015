@@ -1,4 +1,5 @@
 function GetStriperConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+% 542, 612 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)

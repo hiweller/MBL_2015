@@ -28,7 +28,7 @@ end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
-% get color information for buzzard cones
+% get color information for bluefish cones
 for i = 1:16
     Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(1,i);
     Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(2,i);

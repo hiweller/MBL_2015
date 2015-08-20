@@ -72,7 +72,7 @@ imshow(LconeAdpNorm); title('Double cone');
 
 FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
 
-export_fig([FlounDir, '_2Fish_DCimg_up.tiff']);
+export_fig([FlounDir, '_Paralichthys_DCimg_up.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
@@ -87,14 +87,14 @@ Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_2Fish_DCimg_LoG_up.tiff']);
+export_fig([FlounDir, '_Paralichthys_DCimg_LoG_up.tiff']);
 
 % trying out "LMS" (RGB) and "MSU" (false color) images
 SLimg(:,:,1) = LconeAdpNorm; SLimg(:,:,2) = LconeAdpNorm; SLimg(:,:,3) = SconeAdpNorm;
 
 figure
 imshow(SLimg);
-export_fig([FlounDir, '_2Fish_SLimg.tiff']);
+export_fig([FlounDir, '_Paralichthys_SLimg.tiff']);
 
 figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
@@ -109,7 +109,7 @@ IsoSLimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoSLimg(:,:,2) = (IsoLconeAdpNor
 
 figure
 imshow(IsoSLimg); title('Iso-SL');
-export_fig([FlounDir, '_2Fish_IsoLMSimg.tiff']);
+export_fig([FlounDir, '_Paralichthys_IsoLMSimg.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
@@ -128,6 +128,6 @@ IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+im
 figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_2Fish_IsoCones_LoG_up.tiff']);
+export_fig([FlounDir, '_Paralichthys_IsoCones_LoG_up.tiff']);
 
 end
