@@ -70,11 +70,7 @@ SconeAdpNorm = (SconeAdp - log(sum(S_Black)/sum(S_bk)))/(log(sum(S_White)/sum(S_
 LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_bk)) - log(sum(L_Black)/sum(L_bk)));
 
 figure
-imshow(LconeAdpNorm); title('Double cone');
-
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
-
-export_fig([FlounDir, '_Striper_DCimg_up.tiff']);
+imshow(LconeAdpNorm); title('L cone');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
@@ -89,31 +85,25 @@ Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_Striper_DCimg_LoG_up.tiff']);
-
-% trying out "LMS" (RGB) and "MSU" (false color) images
-LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = SconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
+% 542 nm = M and S (G/B) channels
+LSimg(:,:,1) = LconeAdpNorm; LSimg(:,:,2) = SconeAdpNorm; LSimg(:,:,3) = SconeAdpNorm;
 
 figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
 subaxis(1,2,2, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
 
-
 figure
-imshow(LMSimg); title('LMS');
-export_fig([FlounDir, '_Striper_LSimg.tiff']);
+imshow(LSimg); title('LMS');
 
 ConeNorm = (SconeAdpNorm+LconeAdpNorm)/2;
 
 IsoSconeAdpNorm = SconeAdpNorm - ConeNorm;
 IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 
-IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+IsoLSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
 
 figure
-imshow(IsoLMSimg); title('Iso-LMS');
-export_fig([FlounDir, '_Striper_IsoLMSimg.tiff']);
-
+imshow(IsoLSimg); title('Iso-LS');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
@@ -132,6 +122,13 @@ IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+im
 figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_Striper_IsoSLcones_LoG_up.tiff']);
 
+FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+
+TiffWrite(FlounDir, DirImg, 'Striper_DCimg', LconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Striper_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Striper_LS', LSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Striper_IsoLS', IsoLSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Striper_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Striper_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

@@ -83,7 +83,13 @@ Striper2Cones = Striper2Cones(:, RefNumber);
 Striper2Cones = Striper2Cones/norm(Striper2Cones, Inf);
 dlmwrite('Striper2Cones.dat', Striper2Cones);
 
-
+MenideaCones = [400, 449, 570];
+for i = 1:length(MenideaCones)
+    Menidea3Cones(i,:) = GenVPtemplate(MenideaCones(i));
+end
+Menidea3Cones = Menidea3Cones(:, RefNumber);
+Menidea3Cones = Menidea3Cones/norm(Menidea3Cones, Inf);
+dlmwrite('Menidea3Cones.dat', Menidea3Cones);
 
 
 

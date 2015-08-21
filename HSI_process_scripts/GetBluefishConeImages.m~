@@ -87,6 +87,8 @@ LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_
 figure
 imshow(LconeAdpNorm); title('Double cone');
 
+FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
     img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
@@ -109,6 +111,7 @@ subaxis(2,2,1, 'Spacing', 0.03), imshow(UconeAdpNorm); title('UV cone');
 subaxis(2,2,2, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
 subaxis(2,2,3, 'Spacing', 0.03), imshow(MconeAdpNorm); title('M cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
+
 
 figure
 imshow(LMSimg); title('LMS');
