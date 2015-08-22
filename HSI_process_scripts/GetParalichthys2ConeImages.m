@@ -124,8 +124,8 @@ subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
 TiffWrite(FlounDir, DirImg, 'Paralichthys_DCimg', LconeAdpNorm, 'bw');
 TiffWrite(FlounDir, DirImg, 'Paralichthys_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_LS', LSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoLS', IsoLSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Paralichthys_LS', SLimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoLS', IsoSLimg, 'rgb');
 TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoSconeLoG', IsoSconeEdge_img, 'bw');
 TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

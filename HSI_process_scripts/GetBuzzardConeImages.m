@@ -173,8 +173,8 @@ subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
 FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
-TiffWrite(FlounDir, DirImg, 'Buzzard_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_DCimg', DconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_LoG', Dcone_img, 'bw');
 TiffWrite(FlounDir, DirImg, 'Buzzard_LMS', LMSimg, 'rgb');
 TiffWrite(FlounDir, DirImg, 'Buzzard_MSU', MSUimg, 'rgb');
 TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLMS', IsoLMSimg, 'rgb');
@@ -183,4 +183,5 @@ TiffWrite(FlounDir, DirImg, 'Buzzard_IsoUconeLoG', IsoUconeEdge_img, 'bw');
 TiffWrite(FlounDir, DirImg, 'Buzzard_IsoSconeLoG', IsoSconeEdge_img, 'bw');
 TiffWrite(FlounDir, DirImg, 'Buzzard_IsoMconeLoG', IsoMconeEdge_img, 'bw');
 TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+
 end

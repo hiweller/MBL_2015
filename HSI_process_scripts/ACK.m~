@@ -33,6 +33,20 @@ F5Blue = '20150814105011.556_31ms.3d_31.00ms';
 F135BlueWhite = '20150814105114.261_12ms.3d_12.00ms';
 F2BlueWhite = '20150814105518.394_12ms.3d_12.00ms';
 
+GetParalichthys2ConeImages(1, 'Gravel', F1Gravel, 'Aug4', 1, 1)
+GetParalichthys2ConeImages(2, 'Gravel', F2Gravel, 'Aug4', 1, 1)
+GetParalichthys2ConeImages(3, 'Gravel', F3Gravel, 'Aug4', 1, 1)
+GetParalichthys2ConeImages(4, 'Gravel', F4Gravel, 'Aug4', 1, 1)
+
+for i = 1:4
+    GravelImg = sprintf('%s%s%s', 'F', i, 'Gravel');
+    SandImg = sprintf('%s%s%s', 'F', i, 'Sand');
+    GetParalichthys2ConeImages(i, 'Gravel', GravelImg, 'Aug4', 1, 1)
+    if i ~= 4
+        
+    end
+end
+
 RefNumber = [360, 380, 405, 420, 436, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660];
 RefNumber = RefNumber - 299;
 
