@@ -20,12 +20,6 @@ F4GravelWhite = '20150806145556.736_18ms.3d_18.00ms';
 F4Sand = '20150730102559.874_43ms.3d_43.00ms';
 F4SandWhite = '20150730102726.378_16ms.3d_16.00ms';
 
-
-Buzzard4Cones = xlsread('forCC.xlsx', 'B4:E404');
-Hawk4Cones = xlsread('forCC.xlsx', 'G4:J404');
-
-% blue gravel
-
 F1Blue = '20150814104945.840_31ms.3d_31.00ms';
 F2Blue = '20150814105334.625_27ms.3d_27.00ms';
 F3Blue = '20150814104909.756_31ms.3d_31.00ms';
@@ -33,7 +27,16 @@ F5Blue = '20150814105011.556_31ms.3d_31.00ms';
 F135BlueWhite = '20150814105114.261_12ms.3d_12.00ms';
 F2BlueWhite = '20150814105518.394_12ms.3d_12.00ms';
 
+RefNumber = [360, 380, 405, 420, 436, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660];
+RefNumber = RefNumber - 299;
 
+Buzzard4Cones = Buzzard4Cones(RefNumber,:);
+Buzzard4Cones(isnan(Buzzard4Cones))=0;
+Buzzard4Cones = Buzzard4Cones/norm(Buzzard4Cones, Inf);
+dlmwrite('Buzzard4Cones.dat', transpose(Buzzard4Cones));
 
+Hawk4Cones = Hawk4Cones(RefNumber,:);
+Hawk4Cones(isnan(Hawk4Cones))=0;
+dlmwrite('Hawk4Cones.dat', transpose(Hawk4Cones));
 
-
+difishcones = [450, 545];
