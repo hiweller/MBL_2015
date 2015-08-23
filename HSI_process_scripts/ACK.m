@@ -33,63 +33,6 @@ F5Blue = '20150814105011.556_31ms.3d_31.00ms';
 F135BlueWhite = '20150814105114.261_12ms.3d_12.00ms';
 F2BlueWhite = '20150814105518.394_12ms.3d_12.00ms';
 
-RefNumber = [360, 380, 405, 420, 436, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660];
-RefNumber = RefNumber - 299;
-
-Buzzard4Cones = Buzzard4Cones(RefNumber,:);
-Buzzard4Cones(isnan(Buzzard4Cones))=0;
-Buzzard4Cones = Buzzard4Cones/norm(Buzzard4Cones, Inf);
-dlmwrite('Buzzard4Cones.dat', transpose(Buzzard4Cones));
-
-Hawk4Cones = Hawk4Cones(RefNumber,:);
-Hawk4Cones(isnan(Hawk4Cones))=0;
-dlmwrite('Hawk4Cones.dat', transpose(Hawk4Cones));
-
-difishcones = [450, 545];
-
-for i = 1:length(difishcones)
-    Difish2Cones(i,:) = GenVPtemplate(difishcones(i));
-end
-Fish2Cones = Difish2Cones(RefNumber,:);
-Fish2Cones(isnan(Fish2Cones))=0;
-Fish2Cones = Fish2Cones/norm(Fish2Cones, Inf);
-dlmwrite('Fish2Cones.dat', Fish2Cones);
-
-
-SummerFlounderCones = [449, 525];
-for i = 1:length(SummerFlounderCones)
-    Paralichthys2Cones(i,:) = GenVPtemplate(SummerFlounderCones(i));
-end
-Paralichthys2Cones = Paralichthys2Cones(:, RefNumber);
-Paralichthys2Cones = Paralichthys2Cones/norm(Paralichthys2Cones, Inf);
-dlmwrite('Paralichthys2Cones.dat', Paralichthys2Cones);
-
-
-BluefishCones = [433, 438, 507, 547];
-for i = 1:length(BluefishCones)
-    Bluefish4Cones(i,:) = GenVPtemplate(BluefishCones(i));
-end
-Bluefish4Cones = Bluefish4Cones(RefNumber,:);
-Bluefish4Cones = Bluefish4Cones/norm(Bluefish4Cones, Inf);
-dlmwrite('Bluefish4Cones.dat', Bluefish4Cones);
-
-StriperCones = [542, 612];
-for i = 1:length(StriperCones)
-    Striper2Cones(i,:) = GenVPtemplate(StriperCones(i));
-end
-Striper2Cones = Striper2Cones(:, RefNumber);
-Striper2Cones = Striper2Cones/norm(Striper2Cones, Inf);
-dlmwrite('Striper2Cones.dat', Striper2Cones);
-
-MenideaCones = [400, 449, 570];
-for i = 1:length(MenideaCones)
-    Menidea3Cones(i,:) = GenVPtemplate(MenideaCones(i));
-end
-Menidea3Cones = Menidea3Cones(:, RefNumber);
-Menidea3Cones = Menidea3Cones/norm(Menidea3Cones, Inf);
-dlmwrite('Menidea3Cones.dat', Menidea3Cones);
-
-
 
 
 
