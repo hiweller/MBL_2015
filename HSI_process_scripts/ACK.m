@@ -20,12 +20,6 @@ F4GravelWhite = '20150806145556.736_18ms.3d_18.00ms';
 F4Sand = '20150730102559.874_43ms.3d_43.00ms';
 F4SandWhite = '20150730102726.378_16ms.3d_16.00ms';
 
-
-Buzzard4Cones = xlsread('forCC.xlsx', 'B4:E404');
-Hawk4Cones = xlsread('forCC.xlsx', 'G4:J404');
-
-% blue gravel
-
 F1Blue = '20150814104945.840_31ms.3d_31.00ms';
 F2Blue = '20150814105334.625_27ms.3d_27.00ms';
 F3Blue = '20150814104909.756_31ms.3d_31.00ms';
@@ -48,45 +42,3 @@ Hawk4Cones(isnan(Hawk4Cones))=0;
 dlmwrite('Hawk4Cones.dat', transpose(Hawk4Cones));
 
 difishcones = [450, 545];
-
-for i = 1:length(difishcones)
-    Difish2Cones(i,:) = GenVPtemplate(difishcones(i));
-end
-Fish2Cones = Difish2Cones(RefNumber,:);
-Fish2Cones(isnan(Fish2Cones))=0;
-Fish2Cones = Fish2Cones/norm(Fish2Cones, Inf);
-dlmwrite('Fish2Cones.dat', Fish2Cones);
-
-
-SummerFlounderCones = [449, 525];
-for i = 1:length(SummerFlounderCones)
-    Paralichthys2Cones(i,:) = GenVPtemplate(SummerFlounderCones(i));
-end
-Paralichthys2Cones = Paralichthys2Cones(:, RefNumber);
-Paralichthys2Cones = Paralichthys2Cones/norm(Paralichthys2Cones, Inf);
-dlmwrite('Paralichthys2Cones.dat', Paralichthys2Cones);
-
-
-BluefishCones = [433, 438, 507, 547];
-for i = 1:length(BluefishCones)
-    Bluefish4Cones(i,:) = GenVPtemplate(BluefishCones(i));
-end
-Bluefish4Cones = Bluefish4Cones(RefNumber,:);
-Bluefish4Cones = Bluefish4Cones/norm(Bluefish4Cones, Inf);
-dlmwrite('Bluefish4Cones.dat', Bluefish4Cones);
-
-StriperCones = [542, 612];
-for i = 1:length(StriperCones)
-    Striper2Cones(i,:) = GenVPtemplate(StriperCones(i));
-end
-Striper2Cones = Striper2Cones(:, RefNumber);
-Striper2Cones = Striper2Cones/norm(Striper2Cones, Inf);
-dlmwrite('Striper2Cones.dat', Striper2Cones);
-
-
-
-
-
-
-
-
