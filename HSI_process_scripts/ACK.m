@@ -40,3 +40,8 @@ Hawk4Cones(isnan(Hawk4Cones))=0;
 dlmwrite('Hawk4Cones.dat', transpose(Hawk4Cones));
 
 difishcones = [450, 545];
+
+GetWinterFlounder2ConeImages(1, 'Blue', F1Blue, 'Aug4', 1, 1)
+GetWinterFlounder2ConeImages(2, 'Blue', F2Blue, 'Aug4', 1, 1)
+GetWinterFlounder2ConeImages(3, 'Blue', F3Blue, 'Aug4', 1, 1)
+GetWinterFlounder2ConeImages(5, 'Blue', F5Blue, 'Aug4', 1, 1)
