@@ -66,4 +66,6 @@ for i = 10:length(imvector)
     delete(roiwindow);
 end
 
+F1BlueMask = imread(['FishMask_', F1Blue, '.tiff']);
+whitecount = sum(F1BlueMask(:) == 1);
 
