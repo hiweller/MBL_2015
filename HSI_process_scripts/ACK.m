@@ -27,21 +27,43 @@ F5Blue = '20150814105011.556_31ms.3d_31.00ms';
 F135BlueWhite = '20150814105114.261_12ms.3d_12.00ms';
 F2BlueWhite = '20150814105518.394_12ms.3d_12.00ms';
 
-RefNumber = [360, 380, 405, 420, 436, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660];
-RefNumber = RefNumber - 299;
+imvector = {F1Gravel F1Sand F1Blue F2Gravel F2Sand F2Blue F3Gravel F3Sand F3Blue F4Gravel F4Sand F5Blue};
 
-Buzzard4Cones = Buzzard4Cones(RefNumber,:);
-Buzzard4Cones(isnan(Buzzard4Cones))=0;
-Buzzard4Cones = Buzzard4Cones/norm(Buzzard4Cones, Inf);
-dlmwrite('Buzzard4Cones.dat', transpose(Buzzard4Cones));
+for i = 1:length(imvector)
+    readimg = imread([imvector{i}, '_Global_Ref.jpg']);
+    img = roipoly(readimg);
+    savename = sprintf('%s%s%s', 'FishMask_', imvector{i}, '.tiff');
+    imwrite(img, savename);
+    pause
+end
 
-Hawk4Cones = Hawk4Cones(RefNumber,:);
-Hawk4Cones(isnan(Hawk4Cones))=0;
-dlmwrite('Hawk4Cones.dat', transpose(Hawk4Cones));
+% generating fish-only mask
+for i = 1:length(imvector)
+    readimg = imread([imvector{i}, '_Global_Ref.jpg']);
+    roiwindow = CROIEditor(readimg);
+    pause
+    %     Multi-ROI GUI will pop up; make mask, then click "apply" when done 
+    [roi, labels, number] = getROIData(roiwindow);
+    
+    savename = sprintf('%s%s%s', 'FishMask_', imvector{i}, '.tiff');
+    imwrite(roi, savename);
+    delete(roiwindow);
+end
 
-difishcones = [450, 545];
+% generating mask for the background (blocking out fish + bins/edges etc)
+for i = 10:length(imvector)
+    readimg = imread([imvector{i}, '_Global_Ref.jpg']);
+    roiwindow = CROIEditor(readimg);
+    pause
+%     Multi-ROI GUI will pop up; make mask, then click "apply" when done 
+%     select everything non-background (fish, bin sections, shadows etc)
+    [roi, labels, number] = getROIData(roiwindow);
+    
+    savename = sprintf('%s%s%s', 'BackgroundMask_', imvector{i}, '.tiff');
+    
+%     imcomplement inverts the image so non-background is blacked out
+    imwrite(imcomplement(roi), savename);
+    delete(roiwindow);
+end
 
-GetWinterFlounder2ConeImages(1, 'Blue', F1Blue, 'Aug4', 1, 1)
-GetWinterFlounder2ConeImages(2, 'Blue', F2Blue, 'Aug4', 1, 1)
-GetWinterFlounder2ConeImages(3, 'Blue', F3Blue, 'Aug4', 1, 1)
-GetWinterFlounder2ConeImages(5, 'Blue', F5Blue, 'Aug4', 1, 1)
+
