@@ -1,45 +1,51 @@
-function BandImg = ShowRad(Lizards,varargin)
+function BandImg = ShowRad(file_folder,varargin)
 % ex: ShowRad('June07_lizards')
 
 %*% make sure these files are in your path
 load 2015-08-21_Leif_conversion_files flatfield radiancecalibration deconvolution
 load 2015-08-27_dark_noise_average_by_band
+load 2015-08-27_flatfieldSEP transformmat
 load BadPixelMask
+
+save_file_path = [file_folder '/RadFiles/'];
+if ~exist(save_file_path,'dir')
+    mkdir(save_file_path)
+end
 
 if isempty(varargin)
     %*% defaults
-    mask_flag = 0;
-    df_flag = 1;
-    ff_flag = 1;
-    decon_flag = 1;
-    rad_flag = 1;
+    bad_pixel_mask_flag = 1;
+    darknoisesubtraction_flag = 1;
+    flatfieldcorrection_leif_flag = 1;
+    flatfieldcorrection_sep_flag = 1;
+    deconvolution_flag = 1;
+    radiance_conversion_flag = 1;
     plot_flag = 1;
     save_flag = 0;
 else
-    mask_flag = varargin(1);
-    df_flag = varargin(2);
-    ff_flag = varargin(3);
-    decon_flag = varargin(4);
-    rad_flag = varargin(5);
-    plot_flag = varargin(6);
-    save_flag = varargin(7);
+    bad_pixel_mask_flag = varargin(1);
+    darknoisesubtraction_flag = varargin(2);
+    flatfieldcorrection_leif_flag = varargin(3);
+    flatfieldcorrection_sep_flag = varargin(4);
+    deconvolution_flag = varargin(5);
+    radiance_conversion_flag = varargin(6);
+    plot_flag = varargin(7);
+    save_flag = varargin(8);
 end
 
 flatfield(flatfield==Inf) = 0;
 
 %*% arrangement of the filters on the camera, top left (moving right by rows), to bottom right:
-ArrayInx = [9,   6,   5,   13,  3,   10,  14,  15,  4,   8,   0,   11,  12,  1,   7,   2];
-ArrayInx = ArrayInx+1; % start from 1
-
+ArrayInx = [10 7 6 14 4 11 15 16 5 9 1 12 13 2 8 3];
 ArrayInxInv = [11 14 16 5 9 3 2 15 10 1 6 12 13 4 7 8]; %#ok<*NASGU>
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', ...
     '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
-imagedir = dir([Lizards, '/*.3d']);
+imagedir = dir([file_folder, '/*.3d']);
 
-for iimage = 1%:length(imagedir)
-    cuberead = fread(fopen([Lizards '/' imagedir(iimage).name]), [2048 2048], 'uint16');
+for iimage = 1:length(imagedir)
+    cuberead = fread(fopen([file_folder '/' imagedir(iimage).name]), [2048 2048], 'uint16');
     %     cuberead = double(cuberead);
     %     cuberead(cuberead>2^16) = 0;
     
@@ -116,37 +122,48 @@ for iimage = 1%:length(imagedir)
         temp(1:3,:) = 0;
         FilterImg(:,:,iband) = temp;
     end
+    FilterImg = double(FilterImg);
     
     %*% mask out bad pixels
-    if mask_flag == 1
+    if bad_pixel_mask_flag == 1
         BadPixelMask = double(BadPixelMask);
         BadPixelMask(BadPixelMask==0) = nan;
         for iband = 1:16
             FilterImg(:,:,iband) = FilterImg(:,:,iband).*BadPixelMask;
         end
     end
-    FilterImg = uint16(FilterImg);
     
     %*% perform the dark field subtraction
-    if df_flag == 1
+    if darknoisesubtraction_flag == 1
         for iband = 1:16
-            FilterImg(:,:,iband) = FilterImg(:,:,iband) - uint16(dark_noise_by_band(iband));
+            FilterImg(:,:,iband) = FilterImg(:,:,iband) - dark_noise_by_band(iband);
         end
     end
     FilterImg(FilterImg<0) = 0;
+    FilterImg = uint16(FilterImg);
     FilterImg = double(FilterImg);
     
     %*% perform the flat field correction
-    if ff_flag == 1;
+    if flatfieldcorrection_leif_flag == 1;
         for iband = 1:16
-            FilterImg(:,:,iband) = uint16(FilterImg(:,:,iband).*FlatfieldByBand(:,:,iband));
+            FilterImg(:,:,iband) = FilterImg(:,:,iband).*FlatfieldByBand(:,:,iband);
         end
-        FilterImg = double(FilterImg);
     end
+    FilterImg = uint16(FilterImg);
+    FilterImg = double(FilterImg);
+    
+    %*% SEP flat field correction (computed gradients in diffuse sky images)
+    if flatfieldcorrection_sep_flag == 1;
+        for iband = 1:16
+            FilterImg(:,:,iband) = FilterImg(:,:,iband).*transformmat(:,:,iband);
+        end
+    end
+    FilterImg = uint16(FilterImg);
+    FilterImg = double(FilterImg);
     
     %*% perform the deconvolution to remove artifacts from spillover into
     %other wavelength bands
-    if decon_flag == 1
+    if deconvolution_flag == 1
         TempImg = FilterImg;
         deconv_unscramble = deconvolution(:,ArrayInx);
         for iband = 1:16
@@ -159,9 +176,13 @@ for iimage = 1%:length(imagedir)
         end
         FilterImg(FilterImg<0) = 0;
     end
+%     FilterImg = uint16(FilterImg);  %*% question for Leif - they don't do
+%     this in Convert2Tiff, but it seems like you may want to re-bin counts after
+%     deconvolution.  It makes the images much "brighter".
+    FilterImg = double(FilterImg);
     
     %*% perform radiance conversion
-    if rad_flag == 1
+    if radiance_conversion_flag == 1
         conv_t = radiancecalibration(1,1)./integration_time;
         rad_conv = radiancecalibration(2:17,1)./radiancecalibration(2:17,2).*conv_t;
         for iband = 1:16
@@ -170,38 +191,45 @@ for iimage = 1%:length(imagedir)
     end
     
     %*% set mask to NaN's again, since uint8 or uint16 conversion changes NaN to 0
-    if mask_flag == 1
+    if bad_pixel_mask_flag == 1
         for iband = 1:16
             FilterImg(:,:,iband) = FilterImg(:,:,iband).*BadPixelMask;
         end
     end
     
     %*% compute the global mean and max
-    global_mean = nanmean(FilterImg(:));
-    global_max = nanmax(FilterImg(:));
+    global_mean = double(nanmean(FilterImg(:)));
+    global_max = double(nanmax(FilterImg(:)));
     
     for j = 1:16
         BandImg(:,:,j) = FilterImg(:,:,j);
     end
     BandImg(BandImg<0) = 0;
-    BandImg = double(BandImg);
     
     RGBImg(:,:,1) = BandImg(:,:,15); % 640 nm
     RGBImg(:,:,2) = BandImg(:,:,10); % 540 nm
     RGBImg(:,:,3) = BandImg(:,:,5); % 436 nm
-        
+    
+    gamma_monitor_adjust = 1/1.8;  %*% VIP if you want to actually see what's there on a mac monitor; use 2.2 if not mac
+    RGBImg = uint8((RGBImg./global_max).^gamma_monitor_adjust.*255);
+    
     %*% display a pseudocolor image to test
     if plot_flag == 1
         if iimage == 1
             fig = figure;
         end
-        gamma_monitor_adjust = 1/1.8;  %*% VIP if you want to actually see what's there on a mac monitor; use 2.2 if not mac
         figure(fig);
-        imagesc(uint8((RGBImg./global_max).^gamma_monitor_adjust.*255));
+        imagesc(RGBImg);
         axis square;
         axis off;
         title(imagedir(iimage).name,'Interpreter','none');
         if length(imagedir)> 1; pause;end
+    end
+    
+    %*% save a .mat file for each image
+    if save_flag == 1
+        save([save_file_path imagedir(iimage).name '.Rad4U.mat'],'BandImg','*flag');
+        imwrite(RGBImg,[save_file_path imagedir(iimage).name '.Rad4U_RGB.png'],'png');
     end
 end
 
