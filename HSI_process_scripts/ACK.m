@@ -67,3 +67,38 @@ for i = 10:length(imvector)
 end
 
 
+% get flagged flounder 3d files
+[num, txt, raw] = xlsread('flaggedflounder.xls');
+
+for i = 2:length(raw(:,1))
+    HSIname = raw{i,1};
+    stringfriend = strsplit(HSIname, '/');
+    matsource = sprintf('%s%s%s', 'Highlights/RadFiles/', stringfriend{2}, '.Rad4U.mat');
+    pngsource = sprintf('%s%s%s', 'Highlights/RadFiles/', stringfriend{2}, '.Rad4U_RGB.png');
+    if raw{i,7} == 1
+        copyfile(matsource, 'Whites/');
+        copyfile(pngsource, 'Whites/');
+        copyfile(HSIname, 'Whites/');
+    end
+%     if raw{i,5} == 1
+%         copyfile(matsource, 'Flagged Flounder/');
+%         copyfile(pngsource, 'Flagged Flounder/');
+%         copyfile(HSIname, 'Flagged Flounder/');
+%     end
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

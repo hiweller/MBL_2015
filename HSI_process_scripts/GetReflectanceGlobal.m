@@ -1,6 +1,4 @@
-% F3SAND
-
-function GetReflectanceGlobal(Date, FlounderNum, Substrate, ObjectDirectory, WhiteDirectory)
+function GetReflectanceGlobal(ObjectDirectory, WhiteDirectory)
 % writes Global_Ref image to HSIData/ConeImages/FlounderNum/Substrate
 % writes jpg to folder with tiffs in it
 % start in folder with dates in it
@@ -8,13 +6,15 @@ function GetReflectanceGlobal(Date, FlounderNum, Substrate, ObjectDirectory, Whi
 
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
-for i = 1:16
-    ObjectFilename = [Date,'/',ObjectDirectory,'/',ObjectDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
-    ObjectImg(:,:,i) = imread(ObjectFilename,'tiff');
-    WhiteFilename = [Date,'/',WhiteDirectory,'/',WhiteDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
-    WhiteImg(:,:,i) = imread(WhiteFilename,'tiff');
-end
+% for i = 1:16
+%     ObjectFilename = [Date,'/',ObjectDirectory,'/',ObjectDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
+%     ObjectImg(:,:,i) = imread(ObjectFilename,'tiff');
+%     WhiteFilename = [Date,'/',WhiteDirectory,'/',WhiteDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
+%     WhiteImg(:,:,i) = imread(WhiteFilename,'tiff');
+% end
 
+ObjectFilename = [Directory, '/', ObjectDirectory, '.Rad4U.mat'];
+WhiteFilename = [
 figure
 colormap(gray)
 imagesc(WhiteImg(:,:,10));
