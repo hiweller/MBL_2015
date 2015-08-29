@@ -1,5 +1,5 @@
-function GetFish2ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
-% 542 (green), 612 (red/yellow)
+function GetSilverside3ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+% 400, 449, 570 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
@@ -7,8 +7,7 @@ function GetFish2ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,Ligh
 % LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
 
 % load .dat file (should be in ConeImages)
-load Fish2Cones.dat % 4x16 (UV, S, M, L)
-% load ChickenDoubleCone.dat %1x16
+load Menidea3Cones.dat % 3x16 (S, M, L)
 
 ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
 LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
@@ -30,14 +29,16 @@ end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
-% get color information for fish cones
-% Limg = 545nm cone (monochromatic vision)
+% get color information for bluefish cones
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Fish2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Fish2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Menidea3Cones(1,i);
+    Mimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Menidea3Cones(2,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Menidea3Cones(3,i);
 end
 
+% summation across all wavelengths
 Scone = sum(Simg,3);
+Mcone = sum(Mimg,3);
 Lcone = sum(Limg,3);
 
 for i = 1:16
@@ -48,34 +49,37 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Fish2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Fish2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Fish2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Fish2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Fish2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Fish2Cones(2,i);
+    S_bk(i) = Background(i)*LightField(LightDirection,i)*Menidea3Cones(1,i);
+    M_bk(i) = Background(i)*LightField(LightDirection,i)*Menidea3Cones(2,i);
+    L_bk(i) = Background(i)*LightField(LightDirection,i)*Menidea3Cones(3,i);
+    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Menidea3Cones(1,i);
+    M_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Menidea3Cones(2,i);
+    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Menidea3Cones(3,i);
+    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Menidea3Cones(1,i);
+    M_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Menidea3Cones(2,i);
+    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Menidea3Cones(3,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
-
 inxS = find(Scone == 0);
 Scone(inxS) = sum(S_Black);
+inxM = find(Mcone == 0);
+Mcone(inxM) = sum(M_Black);
 inxL = find(Lcone == 0);
 Lcone(inxL) = sum(L_Black);
 
-SconeAdp = log(Scone/sum(S_bk)); % adapted to background and log-transformed (Ln)
-LconeAdp = log(Lcone/sum(L_bk)); 
+% adapted to background and log-transformed (Ln)
+SconeAdp = log(Scone/sum(S_bk)); 
+MconeAdp = log(Mcone/sum(M_bk)); 
+LconeAdp = log(Lcone/sum(L_bk));  
 
 % normalized to a range from 0 to 1 (for display purpose), using black and white surfaces
 SconeAdpNorm = (SconeAdp - log(sum(S_Black)/sum(S_bk)))/(log(sum(S_White)/sum(S_bk)) - log(sum(S_Black)/sum(S_bk)));
+MconeAdpNorm = (MconeAdp - log(sum(M_Black)/sum(M_bk)))/(log(sum(M_White)/sum(M_bk)) - log(sum(M_Black)/sum(M_bk)));
 LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_bk)) - log(sum(L_Black)/sum(L_bk)));
 
 figure
-imshow(LconeAdpNorm); title('Double cone');
-
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
-
-export_fig([FlounDir, '_2Fish_DCimg_up.tiff']);
+imshow(LconeAdpNorm); title('L cone');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
@@ -90,50 +94,58 @@ Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_2Fish_DCimg_LoG_up.tiff']);
-
-% setting both green and blue channels to the 542 nm cone
-SLimg(:,:,1) = LconeAdpNorm; SLimg(:,:,2) = SconeAdpNorm; SLimg(:,:,3) = SconeAdpNorm;
+% pseudocolor images
+LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 
 figure
-imshow(SLimg);
-export_fig([FlounDir, '_2Fish_SLimg.tiff']);
+subaxis(1,3,1, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
+subaxis(1,3,2, 'Spacing', 0.03), imshow(MconeAdpNorm); title('M cone');
+subaxis(1,3,3, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
 
 figure
-subaxis(1,2,1, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
-subaxis(1,2,2, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
+imshow(LMSimg); title('LMS');
 
-justScone(:,:,1:3) = (IsoSconeAdpNorm+3/4)/(6/4);
-justLcone(:,:,1:3) = (IsoLconeAdpNorm+3/4)/(6/4); 
-
-ConeNorm = (SconeAdpNorm+LconeAdpNorm)/2;
+ConeNorm = (SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/3;
 
 IsoSconeAdpNorm = SconeAdpNorm - ConeNorm;
+IsoMconeAdpNorm = MconeAdpNorm - ConeNorm;
 IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 
-IsoSLimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoSLimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoSLimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
 
 figure
-imshow(IsoSLimg); title('Iso-SL');
-export_fig([FlounDir, '_2Fish_IsoLMSimg.tiff']);
+imshow(IsoLMSimg); title('Iso-LMS');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
-for i = 1:11 % adaptive thresholding (Otsu, 1979)
+for i = 1:11
+    % adaptive thresholding (Otsu, 1979)
     imgS(:,:,i) = edge_Otsu(IsoSconeAdpNorm, 'log', [], (i/2));
+    imgM(:,:,i) = edge_Otsu(IsoMconeAdpNorm, 'log', [], (i/2));
     imgL(:,:,i) = edge_Otsu(IsoLconeAdpNorm, 'log', [], (i/2));
 end
 for i = 1:10
     imgpS(:,:,i) = imgS(:,:,i) & imgS(:,:,(i+1));
+    imgpM(:,:,i) = imgM(:,:,i) & imgM(:,:,(i+1));
     imgpL(:,:,i) = imgL(:,:,i) & imgL(:,:,(i+1));
 end
 
 IsoSconeEdge_img = double(imgpS(:,:,1)+imgpS(:,:,2)+imgpS(:,:,3)+imgpS(:,:,4)+imgpS(:,:,5)+imgpS(:,:,6)+imgpS(:,:,7)+imgpS(:,:,8)+imgpS(:,:,9)+imgpS(:,:,10))./10;
+IsoMconeEdge_img = double(imgpM(:,:,1)+imgpM(:,:,2)+imgpM(:,:,3)+imgpM(:,:,4)+imgpM(:,:,5)+imgpM(:,:,6)+imgpM(:,:,7)+imgpM(:,:,8)+imgpM(:,:,9)+imgpM(:,:,10))./10;
 IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+imgpL(:,:,5)+imgpL(:,:,6)+imgpL(:,:,7)+imgpL(:,:,8)+imgpL(:,:,9)+imgpL(:,:,10))./10;
 
 figure
-subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
-subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_2Fish_IsoCones_LoG_up.tiff']);
+subaxis(1,3,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone');
+subaxis(1,3,2, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
+subaxis(1,3,3, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
+FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+
+TiffWrite(FlounDir, DirImg, 'Menidea_DCimg', LconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Menidea_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Menidea_LMS', LMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Menidea_IsoLMS', IsoLMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Menidea_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Menidea_IsoMconeLoG', IsoMconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Menidea_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

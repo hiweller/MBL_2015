@@ -97,10 +97,6 @@ DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_
 figure
 imshow(DconeAdpNorm); title('Double cone');
 
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
-
-export_fig([FlounDir, '_Buzzard_DCimg_up.tiff']);
-
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
     img(:,:,i) = edge_Otsu(DconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
@@ -114,14 +110,9 @@ Dcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_Buzzard_DCimg_LoG_up.tiff']);
-
 % trying out "LMS" (RGB) and "MSU" (false color) images
 LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = UconeAdpNorm;
-% UMSimg(:,:,1) = UconeAdpNorm; UMSimg(:,:,2) = MconeAdpNorm; UMSimg(:,:,3) = SconeAdpNorm;
-% LUSimg(:,:,1) = LconeAdpNorm; LUSimg(:,:,2) = UconeAdpNorm; LUSimg(:,:,3) = SconeAdpNorm; 
-% LMUimg(:,:,1) = LconeAdpNorm; LMUimg(:,:,2) = MconeAdpNorm; LMUimg(:,:,3) = UconeAdpNorm;
 
 figure
 subaxis(2,2,1, 'Spacing', 0.03), imshow(UconeAdpNorm); title('UV cone');
@@ -132,11 +123,9 @@ subaxis(2,2,4, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
 
 figure
 imshow(LMSimg); title('LMS');
-export_fig([FlounDir, '_Buzzard_LMSimg.tiff']);
 
 figure
 imshow(MSUimg); title('MSU');
-export_fig([FlounDir, '_Buzzard_MSUimg.tiff']);
 
 % subaxis(2,2,3, 'Spacing', 0.02), imshow(LUSimg); title('LUS');
 % subaxis(2,2,4, 'Spacing', 0.02), imshow(LMUimg); title('LMU');
@@ -151,17 +140,11 @@ IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
 IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
 
-% IsoUMSimg(:,:,1) = (IsoUconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoUMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-% IsoLUSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,2) = (IsoUconeAdpNorm+3/4)/(6/4); IsoLUSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-% IsoLMUimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
-
 figure
 imshow(IsoLMSimg); title('Iso-LMS');
-export_fig([FlounDir, '_Buzzard_IsoLMSimg.tiff']);
 
 figure
 imshow(IsoMSUimg); title('Iso-MSU');
-export_fig([FlounDir, '_Buzzard_IsoMSUimg.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
@@ -188,6 +171,17 @@ subaxis(2,2,1, 'Spacing', 0.03), imshow(IsoUconeEdge_img); title('Iso U-cone');
 subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_Buzzard_IsoUSMLcones_LoG_up.tiff']);
+
+FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+TiffWrite(FlounDir, DirImg, 'Buzzard_DCimg', DconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_LoG', Dcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_LMS', LMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Buzzard_MSU', MSUimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLMS', IsoLMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoMSU', IsoMSUimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoUconeLoG', IsoUconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoMconeLoG', IsoMconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 
 end

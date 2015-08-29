@@ -28,7 +28,7 @@ end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
-% get color information for buzzard cones
+% get color information for bluefish cones
 for i = 1:16
     Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(1,i);
     Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(2,i);
@@ -87,10 +87,6 @@ LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_
 figure
 imshow(LconeAdpNorm); title('Double cone');
 
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg);
-
-export_fig([FlounDir, '_Bluefish_DCimg_up.tiff']);
-
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
     img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
@@ -104,8 +100,6 @@ Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-export_fig([FlounDir, '_Bluefish_DCimg_LoG_up.tiff']);
-
 % trying out "LMS" (RGB) and "MSU" (false color) images
 LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = MconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = UconeAdpNorm;
@@ -116,14 +110,11 @@ subaxis(2,2,2, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
 subaxis(2,2,3, 'Spacing', 0.03), imshow(MconeAdpNorm); title('M cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(LconeAdpNorm); title('L cone');
 
-
 figure
 imshow(LMSimg); title('LMS');
-export_fig([FlounDir, '_Bluefish_LMSimg.tiff']);
 
 figure
 imshow(MSUimg); title('MSU');
-export_fig([FlounDir, '_Bluefish_MSUimg.tiff']);
 
 ConeNorm = (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 
@@ -137,11 +128,9 @@ IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpN
 
 figure
 imshow(IsoLMSimg); title('Iso-LMS');
-export_fig([FlounDir, '_Bluefish_IsoLMSimg.tiff']);
 
 figure
 imshow(IsoMSUimg); title('Iso-MSU');
-export_fig([FlounDir, '_Bluefish_IsoMSUimg.tiff']);
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 
@@ -168,6 +157,17 @@ subaxis(2,2,1, 'Spacing', 0.03), imshow(IsoUconeEdge_img); title('Iso U-cone');
 subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
-export_fig([FlounDir, '_Bluefish_IsoUSMLcones_LoG_up.tiff']);
+
+FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_DCimg', LconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_LMS', LMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_MSU', MSUimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLMS', IsoLMSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMSU', IsoMSUimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoUconeLoG', IsoUconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMconeLoG', IsoMconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 
 end

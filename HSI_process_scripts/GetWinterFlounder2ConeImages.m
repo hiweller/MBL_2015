@@ -1,11 +1,11 @@
-function GetParalichthys2ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
-% 449, 525 nm
+function GetWinterFlounder2ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+% 461, 529 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
 
 % load .dat file (should be in ConeImages)
-load Paralichthys2Cones.dat % 2x16; 449 nm = "S" cone and 525 nm = "L" cone
+load Pamericanus2Cones.dat % 2x16; 449 nm = "S" cone and 525 nm = "L" cone
 
 ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
 LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
@@ -30,8 +30,8 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 % get color information for fish cones
 % Limg = 525nm cone (monochromatic vision)
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Paralichthys2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Paralichthys2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Pamericanus2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Pamericanus2Cones(2,i);
 end
 
 Scone = sum(Simg,3);
@@ -45,12 +45,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
+    S_bk(i) = Background(i)*LightField(LightDirection,i)*Pamericanus2Cones(1,i);
+    L_bk(i) = Background(i)*LightField(LightDirection,i)*Pamericanus2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Pamericanus2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Pamericanus2Cones(2,i);
+    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Pamericanus2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Pamericanus2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -122,10 +122,10 @@ subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone');
 subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
 FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_LS', SLimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoLS', IsoSLimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Paralichthys_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_DCimg', LconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_LS', SLimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_IsoLS', IsoSLimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'WinterFlounder_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end
