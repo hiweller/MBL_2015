@@ -88,13 +88,20 @@ for i = 2:length(raw(:,1))
 
 end
 
+j = 1;
+for i = 2:length(raw(:,1))
+    row = raw(i,:);
+    if raw{i,5} == 1
+        fprintf(fileID, formatSpec, raw{i,:});
+    end
+end
 
+formatSpec = '%s %d %d %d %d %d %d %s\n';
 
+% load everything as a tiff then turn 
 
-
-
-
-
+imvector = {F3Gravel F2Sand};
+buzzvector = {'Buzzard_DCimg' 'Buzzard_LMS' 'Buzzard_MSU'};
 
 
 

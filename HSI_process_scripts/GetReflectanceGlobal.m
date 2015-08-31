@@ -1,20 +1,20 @@
 function GetReflectanceGlobal(ObjectDirectory, WhiteDirectory)
 % writes Global_Ref image to HSIData/ConeImages/FlounderNum/Substrate
 % writes jpg to folder with tiffs in it
-% start in folder with dates in it
-% Example: GetReflectanceGlobal('Aug06', 1, 'Gravel', longstringonumbers, otherstringonumbers)
+% start HSIData
+% Example: GetReflectanceGlobal('Flagged Flounder/12345678.3d', 'Whites/12345678.3d')
 
-WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
+% WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
-% for i = 1:16
-%     ObjectFilename = [Date,'/',ObjectDirectory,'/',ObjectDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
-%     ObjectImg(:,:,i) = imread(ObjectFilename,'tiff');
-%     WhiteFilename = [Date,'/',WhiteDirectory,'/',WhiteDirectory,'_',WaveNumber((i-1)*5+1:i*5),'_global.tiff'];  
-%     WhiteImg(:,:,i) = imread(WhiteFilename,'tiff');
-% end
+ObjectFilename = [ObjectDirectory, '.Rad4U.mat'];
+WhiteFilename = [WhiteDirectory, '.Rad4U.mat'];
 
-ObjectFilename = [Directory, '/', ObjectDirectory, '.Rad4U.mat'];
-WhiteFilename = [
+load(ObjectFilename); % will load as BandImg
+ObjectImg = BandImg;
+clear BandImg;
+load(WhiteFilename);
+WhiteImg = BandImg;
+
 figure
 colormap(gray)
 imagesc(WhiteImg(:,:,10));
@@ -23,7 +23,7 @@ rect = uint16(getrect);
 close(gcf);
 
 for i = 1:16
-    AvgWhite = mean2(WhiteImg(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3),i));
+    AvgWhite = nanmean(mean(WhiteImg(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3),i)));
     RefObjectImg(:,:,i) = single(ObjectImg(:,:,i))/single(AvgWhite); % make them floating numbers
 end
 
@@ -37,7 +37,7 @@ imshow(ImgRGB);
 Output_filename = [ObjectDirectory,'_Global_Ref'];
 save(Output_filename, 'RefObjectImg');
 
-GRef_Dest = sprintf('%s%s%s%s', 'ConeImages/JuvFlounder #', num2str(FlounderNum), '/', Substrate);
+GRef_Dest = sprintf('%s', 'ConeImages/');
 Output_filename_img = [ObjectDirectory,'_Global_Ref.jpg'];
 imwrite(ImgRGB, Output_filename_img, 'jpeg'); 
 
