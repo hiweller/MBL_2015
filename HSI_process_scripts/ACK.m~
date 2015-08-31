@@ -50,8 +50,6 @@ for i = 1:length(imvector)
     delete(roiwindow);
 end
 
-flagdir = dir('Flagged Files/*.png');
-
 % generating mask for the background (blocking out fish + bins/edges etc)
 for i = 10:length(imvector)
     readimg = imread([imvector{i}, '_Global_Ref.jpg']);
@@ -70,49 +68,5 @@ end
 
 F1BlueMask = imread(['FishMask_', F1Blue, '.tiff']);
 whitecount = sum(F1BlueMask(:) == 1);
-sqrt(17067);
-% make circle with area = whitecount
-
-
-% get flagged flounder 3d files
-[num, txt, raw] = xlsread('flaggedflounder.xls');
-
-for i = 2:length(raw(:,1))
-    HSIname = raw{i,1};
-    stringfriend = strsplit(HSIname, '/');
-    matsource = sprintf('%s%s%s', 'Highlights/RadFiles/', stringfriend{2}, '.Rad4U.mat');
-    pngsource = sprintf('%s%s%s', 'Highlights/RadFiles/', stringfriend{2}, '.Rad4U_RGB.png');
-    if raw{i,7} == 1
-        copyfile(matsource, 'Whites/');
-        copyfile(pngsource, 'Whites/');
-        copyfile(HSIname, 'Whites/');
-    end
-%     if raw{i,5} == 1
-%         copyfile(matsource, 'Flagged Flounder/');
-%         copyfile(pngsource, 'Flagged Flounder/');
-%         copyfile(HSIname, 'Flagged Flounder/');
-%     end
-
-end
-
-j = 1;
-for i = 2:length(raw(:,1))
-    row = raw(i,:);
-    if raw{i,5} == 1
-        fprintf(fileID, formatSpec, raw{i,:});
-    end
-end
-
-formatSpec = '%s %d %d %d %d %d %d %s\n';
-
-% load everything as a tiff then turn 
-
-imvector = {F3Gravel F2Sand};
-buzzvector = {'Buzzard_DCimg' 'Buzzard_LMS' 'Buzzard_MSU'};
-
-
-
-
-
 
 
