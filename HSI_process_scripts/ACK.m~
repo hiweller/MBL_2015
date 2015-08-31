@@ -50,8 +50,6 @@ for i = 1:length(imvector)
     delete(roiwindow);
 end
 
-flagdir = dir('Flagged Files/*.png');
-
 % generating mask for the background (blocking out fish + bins/edges etc)
 for i = 10:length(imvector)
     readimg = imread([imvector{i}, '_Global_Ref.jpg']);
@@ -70,7 +68,5 @@ end
 
 F1BlueMask = imread(['FishMask_', F1Blue, '.tiff']);
 whitecount = sum(F1BlueMask(:) == 1);
-sqrt(17067);
-% make circle with area = whitecount
 
 
