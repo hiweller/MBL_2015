@@ -1,4 +1,4 @@
-function QuantRaptorConeImages(Directory,Filename)
+function QuantBuzzardConeImages(Directory,Filename)
 % Modified from CC's M-code in 2014
 % Example: GetRaptorConeImages_UsingRadianceData('June07_lizards','20150607114429.409_8ms.3d_8.00ms')
 
@@ -187,36 +187,13 @@ colorbar;
 
 AvgTetraDist_AllImage = mean(TetraDist(:))
 
-% compare to specific background
-figure
-colormap(gray)
-imagesc(MconeAdp); % display the image for selecting BACKGROUND area
+rect = importdata(['Masks/BGMask_', Filename, '.mat']);
+BW_Animal = importdata(['Masks/AnimalMask_', Filename, '.mat']);
 
-rect = getrect; % get the rectangle region as a background
-h = imfreehand;
-BW_Animal = createMask(h);
-close(gcf);
-BK_U_Comp = mean2(UconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
-BK_S_Comp = mean2(SconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
-BK_M_Comp = mean2(MconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
-BK_L_Comp = mean2(LconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
-
-% rect = imread(['Masks/BackgroundMask_20150724110559.555_33ms.3d_33.00ms.tiff'], 'tiff');
-% rect = imread(['Masks/BackgroundMask_', Filename, '_31.00ms.tiff'], 'tiff');
-% rect = rect(1:512, 1:512);
-% BW_Animal = imread(['Masks/AnimalMask_', Filename, '_31.00ms.tiff'], 'tiff');
-% BW_Animal = BW_Animal(1:512, 1:512);
-% 
-% 
-% BK_U_Comp = mean2(UconeAdp.*rect);
-% BK_S_Comp = mean2(SconeAdp.*rect);
-% BK_M_Comp = mean2(MconeAdp.*rect);
-% BK_L_Comp = mean2(LconeAdp.*rect);
-
-BK_U_Comp = UconeAdp.*rect;
-BK_S_Comp = SconeAdp.*rect;
-BK_M_Comp = MconeAdp.*rect;
-BK_L_Comp = LconeAdp.*rect;
+BK_U_Comp = mean2(UconeAdp.*rect);
+BK_S_Comp = mean2(SconeAdp.*rect);
+BK_M_Comp = mean2(MconeAdp.*rect);
+BK_L_Comp = mean2(LconeAdp.*rect);
 
 df1 = UconeAdp - BK_U_Comp; 
 df2 = SconeAdp - BK_S_Comp;
