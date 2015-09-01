@@ -4,8 +4,10 @@ function BandImg = Convert2Rad4U(file_folder,varargin)
 %*% make sure these files are in your path
 load 2015-08-21_Leif_conversion_files flatfield radiancecalibration deconvolution
 load 2015-08-27_dark_noise_average_by_band
-load 2015-08-27_flatfieldSEP transformmat
+load 2015-08-27_flatfieldSEP transformmat_test
 load BadPixelMask
+
+transformmat = transformmat_test;
 
 save_file_path = [file_folder '/RadFiles/'];
 if ~exist(save_file_path,'dir')
@@ -21,16 +23,16 @@ if isempty(varargin)
     deconvolution_flag = 1;
     radiance_conversion_flag = 1;
     plot_flag = 1;
-    save_flag = 1;
+    save_flag = 0;
 else
-    bad_pixel_mask_flag = varargin(1);
-    darknoisesubtraction_flag = varargin(2);
-    flatfieldcorrection_leif_flag = varargin(3);
-    flatfieldcorrection_sep_flag = varargin(4);
-    deconvolution_flag = varargin(5);
-    radiance_conversion_flag = varargin(6);
-    plot_flag = varargin(7);
-    save_flag = varargin(8);
+    bad_pixel_mask_flag = varargin{1};
+    darknoisesubtraction_flag = varargin{2};
+    flatfieldcorrection_leif_flag = varargin{3};
+    flatfieldcorrection_sep_flag = varargin{4};
+    deconvolution_flag = varargin{5};
+    radiance_conversion_flag = varargin{6};
+    plot_flag = varargin{7};
+    save_flag = varargin{8};
 end
 
 flatfield(flatfield==Inf) = 0;
