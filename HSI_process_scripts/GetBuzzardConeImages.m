@@ -1,4 +1,4 @@
-function GetBuzzardConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+function GetBuzzardConeImages(DirImg,DateLight,LightNum,LightDirection)
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
@@ -9,9 +9,11 @@ function GetBuzzardConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,Li
 load Buzzard4Cones.dat % 4x16 (UV, S, M, L)
 load ChickenDoubleCone.dat %1x16
 
-ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
-LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
-RefObjectImg = importdata(ImgFilename, 1);
+ImgFilename = [DirImg, '_Global_Ref'];
+LightFilename = ['../SpecData/',DateLight,'/LightField',num2str(LightNum)];
+% load(ImgFilename, 1);
+RefObjectImg = importdata(ImgFilename);
+% RefObjectImg = BandImg;
 load(LightFilename);
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};

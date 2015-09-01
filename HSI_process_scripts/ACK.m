@@ -105,14 +105,39 @@ end
 
 formatSpec = '%s %d %d %d %d %d %d %s\n';
 
-% load everything as a tiff then turn 
 
-imvector = {F3Gravel F2Sand};
-buzzvector = {'Buzzard_DCimg' 'Buzzard_LMS' 'Buzzard_MSU'};
+[num, txt, raw] = xlsread('flaggedflounder.xls');
+
+for i = 2:length(raw(:,1))
+    if isnan(raw{i,2}) == 0
+        for j = 2:length(raw(:,1))
+            if isnan(raw{j,3}) == 0
+                if raw{i,2} == raw{j,3}
+                    ObjName = raw{j,1};
+                    ObjString = strsplit(ObjName, '/');
+                    WhiteName = raw{i,1}
+                    WhiteString = strsplit(WhiteName, '/');
+                    ObjRef = sprintf('%s%s', 'Flagged Flounder/', ObjString{2});
+                    WhiteRef = sprintf('%s%s', 'Whites/', WhiteString{2});
+                    GetReflectanceGlobal(ObjRef, WhiteRef);
+                    pause
+                end
+            end
+        end
+    end
+end
 
 
-
-
-
+for i = 2:length(raw(:,1))
+    for j = 2:length(raw(:,1))
+        if isnan(raw{i,2}) == 0 & isnan(raw{j,3}) == 0 & raw{i,2} == raw{j,3}
+            HSIname = raw{j,1};
+            stringfriend = strsplit(HSIname, '/');
+            WhiteRef = sprintf('%s%s', 'Whites/', stringfriend{2});
+            ObjectRef = sprintf('%s%s', 'Flagged Flounder/', stringfriend{2});
+            GetReflectanceGlobal(ObjectRef, WhiteRef);
+        end
+    end
+end
 
 
