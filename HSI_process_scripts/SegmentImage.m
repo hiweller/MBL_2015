@@ -18,21 +18,21 @@ pause
 % click apply when done, DO NOT QUIT GUI WINDOW, return to command window
 % and hit any key
 [artifactroi, labels, number] = getROIData(aroiwindow);
-save(['GeneralMask_', imgname, '.mat'], 'artifactroi');
+save(['Masks/GeneralMask_', imgname, '.mat'], 'artifactroi');
 delete(aroiwindow);
 
 roiwindow = CROIEditor(readimg);
 disp('Create animal mask');
 pause
 [animalroi, labels, number] = getROIData(roiwindow);
-save(['AnimalMask_', imgname, '.mat'], 'animalroi');
+save(['Masks/AnimalMask_', imgname, '.mat'], 'animalroi');
 delete(roiwindow);
 
 bgwindow = CROIEditor(readimg);
 disp('Create background mask');
 pause
 [bgroi, bglabels, bgnumber] = getROIData(bgwindow);
-save(['BGMask_', imgname, '.mat'], 'bgroi');
+save(['Masks/BGMask_', imgname, '.mat'], 'bgroi');
 delete(bgwindow);
 close all;
 end
