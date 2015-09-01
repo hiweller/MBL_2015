@@ -1,15 +1,13 @@
-function GetStriperConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+function GetStriperConeImages(DirImg,DateLight,LightNum,LightDirection)
 % 542, 612 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
 
-% LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
-
 % load .dat file (should be in ConeImages)
 load Striper2Cones.dat % 2x16 (S, L)
 
-ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
+ImgFilename = [DirImg, '_Global_Ref'];
 LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
 RefObjectImg = importdata(ImgFilename, 1);
 load(LightFilename);

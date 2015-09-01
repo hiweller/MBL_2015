@@ -28,7 +28,7 @@ pause
 
 [bgroi, bglabels, bgnumber] = getROIData(bgwindow);
 bgname = sprintf('%s%s%s', 'BackgroundMask_', imgname, '.tiff');
-imwrite(bgroi, bgname);
+save(['BGMask_', imgname], bgroi);
 delete(bgwindow);
 close all;
 end

@@ -120,8 +120,8 @@ subplot(2,2,3), imshow(MconeAdpNorm); title('M cone');
 subplot(2,2,4), imshow(LconeAdpNorm); title('L cone');
 
 figure
-subplot(1,2,1), imshow(LMSimg); title('LMS');
-subplot(1,2,2), imshow(MSUimg); title('MSV (Pseudo-UV image)');
+subplot(2,2,1), imshow(LMSimg); title('LMS');
+subplot(2,2,2), imshow(MSUimg); title('MSV (Pseudo-UV image)');
 
 IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 IsoSconeAdpNorm = SconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
@@ -132,8 +132,8 @@ IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpN
 IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
 
 figure
-subplot(1,2,1), imshow(IsoLMSimg); title('Iso-LMS');
-subplot(1,2,2), imshow(IsoMSUimg); title('Iso-MSV (Pseudo-UV image)');
+subplot(2,2,1), imshow(IsoLMSimg); title('Iso-LMS');
+subplot(2,2,2), imshow(IsoMSUimg); title('Iso-MSV (Pseudo-UV image)');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11 % adaptive thresholding (Otsu, 1979)
@@ -191,7 +191,7 @@ AvgTetraDist_AllImage = mean(TetraDist(:))
 % figure
 % colormap(gray)
 % imagesc(MconeAdp); % display the image for selecting BACKGROUND area
-% 
+
 % rect = getrect; % get the rectangle region as a background
 % h = imfreehand;
 % BW_Animal = createMask(h);
@@ -201,17 +201,16 @@ AvgTetraDist_AllImage = mean(TetraDist(:))
 % BK_M_Comp = mean2(MconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
 % BK_L_Comp = mean2(LconeAdp(round(rect(2)):round(rect(2))+round(rect(4)),round(rect(1)):round(rect(1))+round(rect(3))));
 
-% rect = imread(['Masks/BackgroundMask_20150724110559.555_33ms.3d_33.00ms.tiff'], 'tiff');
-rect = imread(['Masks/BackgroundMask_', Filename, '_31.00ms.tiff'], 'tiff');
+rect = imread(['Masks/BackgroundMask_20150724110559.555_33ms.3d_33.00ms.tiff'], 'tiff');
 rect = rect(1:512, 1:512);
-BW_Animal = imread(['Masks/AnimalMask_', Filename, '_31.00ms.tiff'], 'tiff');
+BW_Animal = imread(['Masks/AnimalMask_20150724110559.555_33ms.3d_33.00ms.tiff'], 'tiff');
 BW_Animal = BW_Animal(1:512, 1:512);
-
+% rect = imread(['Masks/BackgroundMask_', Filename, '.tiff'], 'tiff');
 
 BK_U_Comp = mean2(UconeAdp.*rect);
-BK_S_Comp = mean2(SconeAdp.*rect);
-BK_M_Comp = mean2(MconeAdp.*rect);
-BK_L_Comp = mean2(LconeAdp.*rect);
+BK_U_Comp = mean2(UconeAdp.*rect);
+BK_U_Comp = mean2(UconeAdp.*rect);
+BK_U_Comp = mean2(UconeAdp.*rect);
 
 % BK_U_Comp = UconeAdp.*rect;
 % BK_S_Comp = SconeAdp.*rect;
