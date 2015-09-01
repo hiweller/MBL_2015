@@ -94,14 +94,14 @@ DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_
 figure
 imshow(DconeAdpNorm); title('Double cone');
 
-% % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
-% for i = 1:11
-%     img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
-% end
-% for i = 1:10
-%     imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
-% end
-% Dcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+imgp(:,:,6)+imgp(:,:,7)+imgp(:,:,8)+imgp(:,:,9)+imgp(:,:,10))./10;
+% Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
+for i = 1:11
+    img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+end
+for i = 1:10
+    imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
+end
+Dcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+imgp(:,:,6)+imgp(:,:,7)+imgp(:,:,8)+imgp(:,:,9)+imgp(:,:,10))./10;
 
 figure
 imshow(Dcone_img); title('Edge detection using Laplacian of Gaussian model');
@@ -119,41 +119,41 @@ figure
 subplot(1,2,1), imshow(LMSimg); title('LMS');
 subplot(1,2,2), imshow(MSUimg); title('MSV (Pseudo-UV image)');
 
-% IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-% IsoSconeAdpNorm = SconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-% IsoMconeAdpNorm = MconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-% IsoLconeAdpNorm = LconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
-% 
-% IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
-% IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
-% 
-% figure
-% subplot(1,2,1), imshow(IsoLMSimg); title('Iso-LMS');
-% subplot(1,2,2), imshow(IsoMSUimg); title('Iso-MSV (Pseudo-UV image)');
+IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
+IsoSconeAdpNorm = SconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
+IsoMconeAdpNorm = MconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
+IsoLconeAdpNorm = LconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 
-% % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
-% for i = 1:11 % adaptive thresholding (Otsu, 1979)
-%     imgU(:,:,i) = edge_Otsu(IsoUconeAdpNorm, 'log', [], (i/2));
-%     imgS(:,:,i) = edge_Otsu(IsoSconeAdpNorm, 'log', [], (i/2));
-%     imgM(:,:,i) = edge_Otsu(IsoMconeAdpNorm, 'log', [], (i/2));
-%     imgL(:,:,i) = edge_Otsu(IsoLconeAdpNorm, 'log', [], (i/2));
-% end
-% for i = 1:10
-%     imgpU(:,:,i) = imgU(:,:,i) & imgU(:,:,(i+1));
-%     imgpS(:,:,i) = imgS(:,:,i) & imgS(:,:,(i+1));
-%     imgpM(:,:,i) = imgM(:,:,i) & imgM(:,:,(i+1));
-%     imgpL(:,:,i) = imgL(:,:,i) & imgL(:,:,(i+1));
-% end
-% IsoUconeEdge_img = double(imgpU(:,:,1)+imgpU(:,:,2)+imgpU(:,:,3)+imgpU(:,:,4)+imgpU(:,:,5)+imgpU(:,:,6)+imgpU(:,:,7)+imgpU(:,:,8)+imgpU(:,:,9)+imgpU(:,:,10))./10;
-% IsoMconeEdge_img = double(imgpM(:,:,1)+imgpM(:,:,2)+imgpM(:,:,3)+imgpM(:,:,4)+imgpM(:,:,5)+imgpM(:,:,6)+imgpM(:,:,7)+imgpM(:,:,8)+imgpM(:,:,9)+imgpM(:,:,10))./10;
-% IsoSconeEdge_img = double(imgpS(:,:,1)+imgpS(:,:,2)+imgpS(:,:,3)+imgpS(:,:,4)+imgpS(:,:,5)+imgpS(:,:,6)+imgpS(:,:,7)+imgpS(:,:,8)+imgpS(:,:,9)+imgpS(:,:,10))./10;
-% IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+imgpL(:,:,5)+imgpL(:,:,6)+imgpL(:,:,7)+imgpL(:,:,8)+imgpL(:,:,9)+imgpL(:,:,10))./10;
-% 
-% figure
-% subplot(2,2,1), imshow(IsoUconeEdge_img); title('Iso V-cone');
-% subplot(2,2,2), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
-% subplot(2,2,3), imshow(IsoMconeEdge_img); title('Iso M-cone');
-% subplot(2,2,4), imshow(IsoLconeEdge_img); title('Iso L-cone');
+IsoLMSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,2) = (IsoMconeAdpNorm+3/4)/(6/4); IsoLMSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+IsoMSUimg(:,:,1) = (IsoMconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoMSUimg(:,:,3) = (IsoUconeAdpNorm+3/4)/(6/4);
+
+figure
+subplot(1,2,1), imshow(IsoLMSimg); title('Iso-LMS');
+subplot(1,2,2), imshow(IsoMSUimg); title('Iso-MSV (Pseudo-UV image)');
+
+% Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
+for i = 1:11 % adaptive thresholding (Otsu, 1979)
+    imgU(:,:,i) = edge_Otsu(IsoUconeAdpNorm, 'log', [], (i/2));
+    imgS(:,:,i) = edge_Otsu(IsoSconeAdpNorm, 'log', [], (i/2));
+    imgM(:,:,i) = edge_Otsu(IsoMconeAdpNorm, 'log', [], (i/2));
+    imgL(:,:,i) = edge_Otsu(IsoLconeAdpNorm, 'log', [], (i/2));
+end
+for i = 1:10
+    imgpU(:,:,i) = imgU(:,:,i) & imgU(:,:,(i+1));
+    imgpS(:,:,i) = imgS(:,:,i) & imgS(:,:,(i+1));
+    imgpM(:,:,i) = imgM(:,:,i) & imgM(:,:,(i+1));
+    imgpL(:,:,i) = imgL(:,:,i) & imgL(:,:,(i+1));
+end
+IsoUconeEdge_img = double(imgpU(:,:,1)+imgpU(:,:,2)+imgpU(:,:,3)+imgpU(:,:,4)+imgpU(:,:,5)+imgpU(:,:,6)+imgpU(:,:,7)+imgpU(:,:,8)+imgpU(:,:,9)+imgpU(:,:,10))./10;
+IsoMconeEdge_img = double(imgpM(:,:,1)+imgpM(:,:,2)+imgpM(:,:,3)+imgpM(:,:,4)+imgpM(:,:,5)+imgpM(:,:,6)+imgpM(:,:,7)+imgpM(:,:,8)+imgpM(:,:,9)+imgpM(:,:,10))./10;
+IsoSconeEdge_img = double(imgpS(:,:,1)+imgpS(:,:,2)+imgpS(:,:,3)+imgpS(:,:,4)+imgpS(:,:,5)+imgpS(:,:,6)+imgpS(:,:,7)+imgpS(:,:,8)+imgpS(:,:,9)+imgpS(:,:,10))./10;
+IsoLconeEdge_img = double(imgpL(:,:,1)+imgpL(:,:,2)+imgpL(:,:,3)+imgpL(:,:,4)+imgpL(:,:,5)+imgpL(:,:,6)+imgpL(:,:,7)+imgpL(:,:,8)+imgpL(:,:,9)+imgpL(:,:,10))./10;
+
+figure
+subplot(2,2,1), imshow(IsoUconeEdge_img); title('Iso V-cone');
+subplot(2,2,2), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
+subplot(2,2,3), imshow(IsoMconeEdge_img); title('Iso M-cone');
+subplot(2,2,4), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
 % Compute tetrachromatic distances in bird color space
 % Source: Equation 8 in Vorobyev et al JCPA 1998
