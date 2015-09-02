@@ -1,8 +1,13 @@
-function Eval2(Directory, Filename)
-end
+% function Eval2(Directory, Filename)
+% end
 
-AniMask = importdata(['Masks/AnimalMask_', Filename, '.mat'], 1);
-RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
+load Buzzard4Cones.dat
+load ChickenDoubleCone.dat
+maskdir = dir('ConeImages/*_Global_Ref');
+Filename = maskdir(1).name;
+Directory = 'ConeImages';
+AniMask = importdata(['Masks/AnimalMask_SegImg_', Filename, '.png.mat'], 1);
+RefObjectImg = importdata([Directory, '/', Filename], 1);
 
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
@@ -96,18 +101,82 @@ figure, imshow(DetectedEdge);
 PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:))
 
 % get coordinates
-[x,y] = find(BWoutline==1);
+[y,x] = find(BWoutline==1);
 
 % get CoM
 % stats = regionprops(AniMask, DconeAdpNorm, {'WeightedCentroid'});
 stats = regionprops(AniMask, 'Centroid'); % do we want WeightedCentroid instead?
 CoM = stats.Centroid;
 
+imshow(AniMask); hold on;
+successcount = 0;
+while successcount < 100
+%     generate new random location for CoM
+  CoMprime = randi([1 512], 1, 2);
+  
+%   there is probably some super elegant way to translate...this...but...
+%   #CODELIKEABIOLOGIST (c/o westneat lab ideology)
+%   translate coordinates to have new CoM as centroid
+  diff = CoMprime - CoM;
+  xprime = round(x+diff(1));
+  yprime = round(y+diff(2));
+  xprime = round
+  plot(xprime, yprime)
+  
+%   ins1 = find(BWoutline);
+%   testmat = zeros(size(AniMask));
+%   testmat(sub2ind(size(AniMask), round(xprime), round(yprime))) = 1;
+%   intxs = ismember(ins1, ins2);
+
+  xyarray = horzcat(x,y);
+  xyprime = horzcat(round(xprime), round(yprime));
+  findfailures = ismember(xyarray, xyprime, 'rows');
+  
+  if isempty(find(findfailures)) == 1
+      successcount = successcount+1;
+      for i = 1:length(xprime)
+          if xprime
+      end
+%       inxone = find(xprime < 1 | yprime < 1);
+%       inxfive = find(xprime > 512 | yprime > 512);
+%       
+%       xyprime(find(xyprime < 1 | xyprime > 512)) = NaN;
+%       xyprime(xyprime < 1 | xyprime > 512) == NaN;
+%       do some...other stuff i guess
+  end
+  
+end
 % generate new random location for CoM
 CoMprime = randi([1 512], 1, 2);
 
 % there is probably some super elegant way to translate...this...but...
 % #CODELIKEABIOLOGIST (c/o westneat lab ideology)
-
-
 % translate coordinates to have new CoM as centroid
+
+% in mask
+% ins = find(mask)
+% ismember
+
+ins1 = find(BWoutline);
+testmat = zeros(size(AniMask));
+testmat(sub2ind(size(AniMask),round(xstay),round(ystay))) = 1;
+ins2 = find(testmat);
+
+intxs = ismember(ins1, ins2);
+
+xyarray = horzcat(x,y);
+xyprime = horzcat(xstay, ystay);
+
+intx = ismember(xyarray, xyprime, 'rows');
+x = find(intx);
+if x ~= 0
+%     ignore?
+end
+
+% or
+if x == 0
+%     do stuff
+end
+
+
+

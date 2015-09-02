@@ -4,10 +4,11 @@ function BandImg = Convert2Rad4U(file_folder,varargin)
 %*% make sure these files are in your path
 load 2015-08-21_Leif_conversion_files flatfield radiancecalibration deconvolution
 load 2015-08-27_dark_noise_average_by_band
-load 2015-08-27_flatfieldSEP transformmat_test
+load 2015-08-27_flatfieldSEP
+load transformmat
 load BadPixelMask
 
-transformmat = transformmat_test;
+% transformmat = transformmat_test;
 
 save_file_path = [file_folder '/RadFiles/'];
 if ~exist(save_file_path,'dir')
@@ -16,14 +17,14 @@ end
 
 if isempty(varargin)
     %*% defaults
-    bad_pixel_mask_flag = 1;
+    bad_pixel_mask_flag = 0;
     darknoisesubtraction_flag = 1;
     flatfieldcorrection_leif_flag = 1;
     flatfieldcorrection_sep_flag = 1;
     deconvolution_flag = 1;
     radiance_conversion_flag = 1;
     plot_flag = 1;
-    save_flag = 0;
+    save_flag = 1;
 else
     bad_pixel_mask_flag = varargin{1};
     darknoisesubtraction_flag = varargin{2};
@@ -225,7 +226,7 @@ for iimage = 1:length(imagedir)
         axis square;
         axis off;
         title(imagedir(iimage).name,'Interpreter','none');
-        if length(imagedir)> 1; pause;end
+        if length(imagedir)> 1; pause; end
     end
     
     %*% save a .mat file for each image

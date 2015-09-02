@@ -1,16 +1,16 @@
 function GetSegmentationImage(Directory, Filename)
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
-% GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
-
-% LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
+% GBCI('Flagged Files', '12345.Rad4U.mat')
 
 % load .dat file (should be in ConeImages)
 load Buzzard4Cones.dat % 4x16 (UV, S, M, L)
 load ChickenDoubleCone.dat %1x16
 
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
-RefObjectImg = importdata([Directory, '/', Filename]);
+% load([Directory, '/', Filename]);
+% RefObjectImg = BandImg;
+RefObjectImg = importdata([Directory, '/', Filename], 1);
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
@@ -125,5 +125,5 @@ SaveImg(:,:,1) = (1-alpha_data).*LMSimg(:,:,1) + alpha_data;
 SaveImg(:,:,2) = (1-alpha_data).*LMSimg(:,:,2) + alpha_data;
 SaveImg(:,:,3) = (1-alpha_data).*LMSimg(:,:,3) + alpha_data;
 
-imwrite(SaveImg, ['Masks/SegImg_', Filename, '.png'], 'png');
+imwrite(SaveImg, ['Poster/SegImg_', Filename, '.png'], 'png');
 end

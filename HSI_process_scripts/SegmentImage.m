@@ -6,10 +6,10 @@ function SegmentImage(Filename, Refname)
 % ex: SegmentImage('12345678.png', '12345678_Global_Ref.jpg')
 
 imgname = Filename;
-refimg = imread(Refname);
+refimg = imread(['Masks/', Refname]);
 figure
 imshow(refimg);
-readimg = imread(['SegImg_', Filename, '_Global_Ref.png']);
+readimg = imread(['Masks/', Filename]);
 aroiwindow = CROIEditor(readimg);
 disp('Create non-artifact mask');
 pause

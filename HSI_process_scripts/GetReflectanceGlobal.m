@@ -38,8 +38,8 @@ Output_filename = [ObjectDirectory,'_Global_Ref'];
 save(Output_filename, 'RefObjectImg');
 
 GRef_Dest = sprintf('%s', 'ConeImages/');
-Output_filename_img = [ObjectDirectory,'_Global_Ref.jpg'];
-imwrite(ImgRGB, Output_filename_img, 'jpeg'); 
+Output_filename_img = [ObjectDirectory,'_Global_Ref.png'];
+imwrite(ImgRGB, Output_filename_img, 'png'); 
 
 movefile(Output_filename, GRef_Dest);
 movefile(Output_filename_img, GRef_Dest);

@@ -107,7 +107,7 @@ formatSpec = '%s %d %d %d %d %d %d %s\n';
 
 
 [num, txt, raw] = xlsread('flaggedflounder.xls');
-
+postdir = dir('Poster/*.3d');
 for i = 2:length(raw(:,1))
     if isnan(raw{i,2}) == 0
         for j = 2:length(raw(:,1))
@@ -117,10 +117,33 @@ for i = 2:length(raw(:,1))
                     ObjString = strsplit(ObjName, '/');
                     WhiteName = raw{i,1}
                     WhiteString = strsplit(WhiteName, '/');
-                    ObjRef = sprintf('%s%s', 'Flagged Flounder/', ObjString{2});
+                    ObjRef = sprintf('%s%s', 'Poster/', ObjString{2});
                     WhiteRef = sprintf('%s%s', 'Whites/', WhiteString{2});
                     GetReflectanceGlobal(ObjRef, WhiteRef);
                     pause
+                end
+            end
+        end
+    end
+end
+
+for i = 2:length(raw(:,1))
+    if isnan(raw{i,2}) == 0
+        for j = 2:length(raw(:,1))
+            if isnan(raw{j,3}) == 0
+                if raw{i,2} == raw{j,3}
+                    ObjName = raw{j,1};
+                    ObjString = strsplit(ObjName, '/');
+                    WhiteName = raw{i,1};
+                    WhiteString = strsplit(WhiteName, '/');
+                    for k = 1:2
+                        if strcmp(ObjString{2}, postdir(k).name) == 1
+                            ObjRef = sprintf('%s%s', 'Poster/', ObjString{2});
+                            WhiteRef = sprintf('%s%s', 'Whites/', WhiteString{2});
+                            GetReflectanceGlobal(ObjRef, WhiteRef);
+                            pause
+                        end
+                    end
                 end
             end
         end
@@ -140,4 +163,9 @@ for i = 2:length(raw(:,1))
     end
 end
 
+
+fsegdir = dir('Masks/SegImg*.png');
+for i = 41:50
+    SegmentImage(fsegdir(i).name, fsegdir(i).name);
+end
 
