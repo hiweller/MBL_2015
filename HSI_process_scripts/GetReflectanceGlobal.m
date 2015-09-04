@@ -6,8 +6,11 @@ function GetReflectanceGlobal(ObjectDirectory, WhiteDirectory)
 
 % WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
-ObjectFilename = [ObjectDirectory, '.Rad4U.mat'];
-WhiteFilename = [WhiteDirectory, '.Rad4U.mat'];
+% ObjectFilename = [ObjectDirectory, '.Rad4U.mat'];
+% WhiteFilename = [WhiteDirectory, '.Rad4U.mat'];
+
+ObjectFilename = ObjectDirectory;
+WhiteFilename = WhiteDirectory;
 
 load(ObjectFilename); % will load as BandImg
 ObjectImg = BandImg;

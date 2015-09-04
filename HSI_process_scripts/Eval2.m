@@ -1,13 +1,8 @@
-% function Eval2(Directory, Filename)
-% end
-
+function [PercentEdge1pixel, CtrlEdge1pixel] = Eval2(Directory, GlobalRefImg)
 load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
-maskdir = dir('ConeImages/*_Global_Ref');
-Filename = maskdir(1).name;
-Directory = 'ConeImages';
-AniMask = importdata(['Masks/AnimalMask_SegImg_', Filename, '.png.mat'], 1);
-RefObjectImg = importdata([Directory, '/', Filename], 1);
+AniMask = importdata(['Masks/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
+RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
 
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
@@ -102,6 +97,9 @@ PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:))
 
 % get coordinates
 [y,x] = find(BWoutline==1);
+xyarray = horzcat(x,y);
+[xd, xy] = find(Dcone_img > 0);
+Dcoords = horzcat(xd, xy);
 
 % get CoM
 % stats = regionprops(AniMask, DconeAdpNorm, {'WeightedCentroid'});
@@ -110,9 +108,12 @@ CoM = stats.Centroid;
 
 imshow(AniMask); hold on;
 successcount = 0;
+CtrlEdge1pixel = zeros(1,500);
+
 while successcount < 500
 %     generate new random location for CoM
   CoMprime = randi([1 512], 1, 2);
+  
   
 %   there is probably some super elegant way to translate...this...but...
 %   #CODELIKEABIOLOGIST (c/o westneat lab ideology)
@@ -120,73 +121,33 @@ while successcount < 500
   diff = CoMprime - CoM;
   xprime = round(x+diff(1));
   yprime = round(y+diff(2));
-
-  xyarray = horzcat(x,y);
-  xyprime = horzcat(xprime, yprime);
-  findfailures = ismember(xyarray, xyprime, 'rows');
   
+  xyprime = horzcat(xprime, yprime);
+  
+%   ROTATE MY FRIEND
+  theta = 2*pi*rand; % generate random angle for rotation
+  RotMatrix = [cos(theta) -sin(theta); sin(theta) cos(theta)]; % rotation matrix
+  center = repmat(CoMprime,length(xprime),1); 
+  xytemp = xyprime - center; % move center of outline to origin for rotation
+  temprot = xytemp*RotMatrix; % rotate outline
+  xytemp = temprot+center; % move back to original center
+  xyrot = round(xytemp);
+  
+  findfailures = ismember(xyarray, xyrot, 'rows');
+  findnegs = xyprime(xyprime < 0);
   if isempty(find(findfailures)) == 1
-      plot(xprime, yprime)
-      testmat = zeros(size(AniMask));
-      testmat(sub2ind(size(AniMask),xprime, yprime)) = 1;
+      plot(xyrot(:,1), xyrot(:,2), '.')
       successcount = successcount+1;
-      for i = 1:length(xprime)
-          if xprime(i) < 1 | yprime(i) < 1 | xprime(i) > 512 | yprime(i) > 512
-              xprime(i) = NaN;
-              yprime(i) = NaN;
-              xyprime(i,:) = [NaN NaN];
+      for i = 1:length(xyrot(:,1))
+          if xyrot(i,1) < 1 | xyrot(i,2) < 1 | xyrot(i,1) > 512 | xyrot(i,2) > 512
+              xyrot(i,:) = NaN;
           end
       end
-
-      
-%       now do edge detection biz
-
-% BWoutline = bwperim(AniMask,8);  % get animal outline
-% DetectedEdge = (BWoutline + Dcone_img) > 1;  % detected edge segments fall on the animal outline
-% figure, imshow(BWoutline);
-% figure, imshow(DetectedEdge);
-% PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:))
-
+      overlap = ismember(xyrot, Dcoords, 'rows');
+      CtrlEdge1pixel(successcount) = length(find(overlap))/length(xyarray(:,1));
   end
-  
+
 end
-% generate new random location for CoM
-CoMprime = randi([1 512], 1, 2);
+hold off;
 
-% there is probably some super elegant way to translate...this...but...
-% #CODELIKEABIOLOGIST (c/o westneat lab ideology)
-% translate coordinates to have new CoM as centroid
-
-% in mask
-% ins = find(mask)
-% ismember
-
-ins1 = find(BWoutline);
-testmat = zeros(size(AniMask));
-testmat(sub2ind(size(AniMask),round(xstay),round(ystay))) = 1;
-ins2 = find(testmat);
-
-intxs = ismember(ins1, ins2);
-
-xyarray = horzcat(x,y);
-xyprime = horzcat(xstay, ystay);
-
-intx = ismember(xyarray, xyprime, 'rows');
-x = find(intx);
-if x ~= 0
-%     ignore?
 end
-
-% or
-if x == 0
-%     do stuff
-end
-
-%       inxone = find(xprime < 1 | yprime < 1);
-%       inxfive = find(xprime > 512 | yprime > 512);
-%       
-%       xyprime(find(xyprime < 1 | xyprime > 512)) = NaN;
-%       xyprime(xyprime < 1 | xyprime > 512) == NaN;
-%       do some...other stuff i guess
-
-

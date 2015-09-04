@@ -125,5 +125,5 @@ SaveImg(:,:,1) = (1-alpha_data).*LMSimg(:,:,1) + alpha_data;
 SaveImg(:,:,2) = (1-alpha_data).*LMSimg(:,:,2) + alpha_data;
 SaveImg(:,:,3) = (1-alpha_data).*LMSimg(:,:,3) + alpha_data;
 
-imwrite(SaveImg, ['Poster/SegImg_', Filename, '.png'], 'png');
+imwrite(SaveImg, ['Masks/SegImg_', Filename, '.png'], 'png');
 end

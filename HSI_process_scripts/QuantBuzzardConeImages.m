@@ -1,4 +1,4 @@
-function QuantBuzzardConeImages(Directory,Filename)
+function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantBuzzardConeImages(Directory,Filename)
 % Modified from CC's M-code in 2014
 % Example: GetRaptorConeImages_UsingRadianceData('June07_lizards','20150607114429.409_8ms.3d_8.00ms')
 
@@ -6,7 +6,7 @@ load Buzzard4Cones.dat; % 4x16 (V,S,M,L) % load Buzzard4Cones.dat; % 1x16
 load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but more realistic) 
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
-RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
+RefObjectImg = importdata([Directory, '/', Filename], 1);
 
 % figure
 for i = 1:16
@@ -167,7 +167,7 @@ w1 = w4/(sqrt(Pc1)/sqrt(Pc4)); % Weber fraction estimate of U Cone
 w2 = w4/(sqrt(Pc2)/sqrt(Pc4)); % Weber fraction estimate of S Cone
 w3 = w4/(sqrt(Pc2)/sqrt(Pc4)); % Weber fraction estimate of M Cone
 
-noart = importdata(['Masks/GeneralMask_', Filename, '.mat']);
+noart = importdata(['Masks/GeneralMask_SegImg_', Filename, '.png.mat']);
 
 % compare to average of the image
 df1 = UconeAdp - mean2(UconeAdp.*noart); 
@@ -185,8 +185,8 @@ colorbar;
 
 AvgTetraDist_AllImage = mean(TetraDist(:))
 
-rect = importdata(['Masks/BGMask_', Filename, '.mat']);
-BW_Animal = importdata(['Masks/AnimalMask_', Filename, '.mat']);
+rect = importdata(['Masks/BGMask_SegImg_', Filename, '.png.mat']);
+BW_Animal = importdata(['Masks/AnimalMask_SegImg_', Filename, '.png.mat']);
 
 BK_U_Comp = mean2(UconeAdp.*rect);
 BK_S_Comp = mean2(SconeAdp.*rect);

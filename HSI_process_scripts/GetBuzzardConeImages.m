@@ -1,7 +1,7 @@
 function GetBuzzardConeImages(DirImg,DateLight,LightNum,LightDirection)
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
-% GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
+% GBCI(1, 'Gravel', stringonumbers_Global_Ref, 'Aug4', 1, 1)
 
 % LightDirection = [up, north, east, south, west, north45, east45, south45, west45]
 
@@ -9,10 +9,10 @@ function GetBuzzardConeImages(DirImg,DateLight,LightNum,LightDirection)
 load Buzzard4Cones.dat % 4x16 (UV, S, M, L)
 load ChickenDoubleCone.dat %1x16
 
-ImgFilename = [DirImg, '_Global_Ref'];
+ImgFilename = DirImg;
 LightFilename = ['../SpecData/',DateLight,'/LightField',num2str(LightNum)];
 % load(ImgFilename, 1);
-RefObjectImg = importdata(ImgFilename);
+RefObjectImg = importdata(ImgFilename, 1);
 % RefObjectImg = BandImg;
 load(LightFilename);
 
@@ -174,16 +174,25 @@ subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone');
 subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
-TiffWrite(FlounDir, DirImg, 'Buzzard_DCimg', DconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_LoG', Dcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_LMS', LMSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Buzzard_MSU', MSUimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLMS', IsoLMSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoMSU', IsoMSUimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoUconeLoG', IsoUconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoMconeLoG', IsoMconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Buzzard_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+imwrite(DconeAdpNorm, ['Buzzard_DCimg', postdir(k).name, '.png']);
+imwrite(Dcone_img, ['Buzzard_LoG', postdir(k).name, '.png']);
+imwrite(LMSimg, ['Buzzard_LMS', postdir(k).name, '.png']);
+imwrite(MSUimg, ['Buzzard_MSU', postdir(k).name, '.png']);
+imwrite(IsoLMSimg, ['Buzzard_IsoLMS', postdir(k).name, '.png']);
+imwrite(IsoMSUimg, ['Buzzard_IsoMSU', postdir(k).name, '.png']);
+imwrite(IsoUconeEdge_img, ['Buzzard_IsoULoG', postdir(k).name, '.png']);
+imwrite(IsoSconeEdge_img, ['Buzzard_IsoSLoG', postdir(k).name, '.png']);
+imwrite(IsoMconeEdge_img, ['Buzzard_IsoMLoG', postdir(k).name, '.png']);
+imwrite(IsoLconeEdge_img, ['Buzzard_IsoLLoG', postdir(k).name, '.png']);
+% TiffWrite('../', DirImg, 'Buzzard_DCimg', DconeAdpNorm, 'bw');
+% TiffWrite('../', DirImg, 'Buzzard_LoG', Dcone_img, 'bw');
+% TiffWrite('../', DirImg, 'Buzzard_LMS', LMSimg, 'rgb');
+% TiffWrite('../', DirImg, 'Buzzard_MSU', MSUimg, 'rgb');
+% TiffWrite('../', DirImg, 'Buzzard_IsoLMS', IsoLMSimg, 'rgb');
+% TiffWrite('../', DirImg, 'Buzzard_IsoMSU', IsoMSUimg, 'rgb');
+% TiffWrite('../', DirImg, 'Buzzard_IsoUconeLoG', IsoUconeEdge_img, 'bw');
+% TiffWrite('../', DirImg, 'Buzzard_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+% TiffWrite('../', DirImg, 'Buzzard_IsoMconeLoG', IsoMconeEdge_img, 'bw');
+% TiffWrite('../', DirImg, 'Buzzard_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 
 end

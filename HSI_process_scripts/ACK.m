@@ -136,8 +136,8 @@ for i = 2:length(raw(:,1))
                     ObjString = strsplit(ObjName, '/');
                     WhiteName = raw{i,1};
                     WhiteString = strsplit(WhiteName, '/');
-                    for k = 1:2
-                        if strcmp(ObjString{2}, postdir(k).name) == 1
+                    for k = 1:3
+                        if strcmp(ObjString{2}, condir(k).name) == 1
                             ObjRef = sprintf('%s%s', 'Poster/', ObjString{2});
                             WhiteRef = sprintf('%s%s', 'Whites/', WhiteString{2});
                             GetReflectanceGlobal(ObjRef, WhiteRef);
@@ -165,7 +165,71 @@ end
 
 
 fsegdir = dir('Masks/SegImg*.png');
-for i = 41:50
+postd = dir('Poster/SegImg*.png');
+for i = 67:length(fsegdir)
     SegmentImage(fsegdir(i).name, fsegdir(i).name);
 end
+
+postdir = dir('Poster/*_Global_Ref');
+DirImg = ['Poster/', postdir(1).name];
+DateLight = 'Aug4';
+LightNum = 1;
+LightDirection = 1;
+
+SegmentImage(postd(3).name, postd(3).name);
+
+
+blackflags = dir('*.3d');
+[num, txt, raw] = xlsread('flags.xls');
+
+for i = 1:length(raw(:,1))
+    if raw{i,4} == 1
+        copyfile(blackflags(i).name, 'Black Flags/');
+    elseif strcmp(raw{i,4}, 'WHITE') == 1
+        copyfile(blackflags(i).name, 'Black Whites/');
+    end
+    
+end
+
+
+blackwhites = dir('Black Whites/*.mat');
+blackblacks = dir('Black Flages/*.mat');
+
+for i = 1:length(blackblacks)
+    GetReflectanceGlobal(['Black Flags/', blackblacks(i).name], ['Black Whites/', blackwhites(2).name])
+end
+
+blackgrefs = dir('Black Flags/*_Global_Ref');
+for i = 3:length(blackgrefs)
+    GetSegmentationImage('Black Flags/', blackgrefs(i).name)
+end
+
+blackpngs = dir('Masks/*_Global_Ref.png');
+SegmentImage(blackpngs(71).name, blackpngs(71).name);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

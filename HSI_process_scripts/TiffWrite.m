@@ -1,6 +1,6 @@
 function TiffWrite(finaldestination, HSIname, imagename, image, colortype)
 % ex: TiffWrite('path/to/save/file/', F1Gravel, '_Bluefish_contrast',
-% LconeAdpNorm, 16, 'bw')
+% LconeAdpNorm, 'bw')
 
 calib_img = image./max(image(:)).*(2^16);
 calib_img = uint16(calib_img);

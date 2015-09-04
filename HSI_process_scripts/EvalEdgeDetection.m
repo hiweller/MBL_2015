@@ -8,8 +8,8 @@ load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but mo
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 
-FishMask = importdata(['Masks/AnimalMask_', Filename, '.mat']);
-RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
+FishMask = importdata(['Masks/AnimalMask_SegImg_', Filename, '.png.mat'], 1);
+RefObjectImg = importdata([Directory, '/', Filename], 1);
 
 % figure
 for i = 1:16
