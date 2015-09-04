@@ -126,4 +126,6 @@ SaveImg(:,:,2) = (1-alpha_data).*LMSimg(:,:,2) + alpha_data;
 SaveImg(:,:,3) = (1-alpha_data).*LMSimg(:,:,3) + alpha_data;
 
 imwrite(SaveImg, ['Masks/SegImg_', Filename, '.png'], 'png');
+imwrite(Dcone_img, ['ConeImages/EdgeDetection_', Filename, '.png'], 'png');
+
 end

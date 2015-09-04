@@ -149,5 +149,7 @@ while successcount < 500
 
 end
 hold off;
+figure
+hist(CtrlEdge1pixel);
 
 end

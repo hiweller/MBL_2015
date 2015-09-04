@@ -208,15 +208,60 @@ blackpngs = dir('Masks/*_Global_Ref.png');
 SegmentImage(blackpngs(71).name, blackpngs(71).name);
 
 
+% eval2 testing on gravel
+Directory = 'ConeImages/Gravel';
+graveldir = dir('ConeImages/Gravel/*_Global_Ref');
+PE1 = zeros(1, length(graveldir));
+CE1 = zeros(length(graveldir), 500);
+for i = 1:length(graveldir)
+    [PE1(i), CE1(i,:)] = Eval2(Directory, graveldir(i).name);
+    pause
+    close all;
+end
+
+% eval2 sand
+Directory = 'ConeImages/Sand';
+sanddir = dir('ConeImages/Sand/*_Global_Ref');
+SandPE1 = zeros(1, length(sanddir));
+SandCE1 = zeros(length(sanddir), 500);
+for i = 1:length(sanddir)
+    [SandPE1(i), SandCE1(i,:)] = Eval2(Directory, sanddir(i).name);
+    pause
+    close all;
+end
+
+Directory = 'ConeImages/Blue';
+bluedir = dir('ConeImages/Blue/*_Global_Ref');
+BluePE1 = zeros(1, length(bluedir));
+BlueCE1 = zeros(length(bluedir), 500);
+for i = 1:length(bluedir)
+    [BluePE1(i), BlueCE1(i, :)] = Eval2(Directory, bluedir(i).name);
+    pause
+    close all;
+end
+mean(BluePE1)
+mean2(BlueCE1)
+mean(BluePE1)/mean2(BlueCE1);
+
+Directory = 'ConeImages/Black Flags'
+blackdir = dir('ConeImages/Black Flags/*_Global_Ref');
+BlackPE1 = zeros(1, length(blackdir));
+BlackCE1 = zeros(length(blackdir), 500);
+for i = 1:length(blackdir)
+    [BlackPE1(i), BlackCE1(i,:)] = Eval2(Directory, blackdir(i).name);
+    pause
+    close all
+end
 
 
+for i = 1:length(blackdir)
+    GetSegmentationImage('Black Flags', blackdir(i).name);
+end
 
-
-
-
-
-
-
+blackrefs = dir('Masks/*201509011*.png');
+for i = 1:length(blackrefs)
+    SegmentImage(blackrefs(i).name, blackrefs(i).name);
+end
 
 
 
