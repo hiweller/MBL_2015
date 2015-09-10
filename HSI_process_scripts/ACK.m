@@ -1,34 +1,3 @@
-F1Gravel = '20150806145852.542_47ms.3d_47.00ms';
-F1GravelWhite = '20150806150039.656_23ms.3d_23.00ms';
-F1Sand = '20150730102012.079_41ms.3d_41.00ms';
-F1SandWhite = '20150730102053.278_17ms.3d_17.00ms';
-
-F2Gravel = '20150724104729.711_26ms.3d_26.00ms';
-F2GravelWhite = '20150724104454.494_13ms.3d_13.00ms';
-F2Sand = '20150730101055.833_42ms.3d_42.00ms';
-F2SandWhite = '20150730101144.329_16ms.3d_16.00ms';
-F2Rocks = '20150728102430.721_129ms.3d_129.00ms';
-F2RocksWhite = '20150728102556.827_75ms.3d_75.00ms';
-
-F3Gravel = '20150724110559.555_33ms.3d_33.00ms';
-F3GravelWhite = '20150724110719.795_12ms.3d_12.00ms';
-F3Sand = '20150730104549.650_36ms.3d_36.00ms';
-F3SandWhite = '20150730104649.934_20ms.3d_20.00ms';
-
-F4Gravel = '20150806145510.796_42ms.3d_42.00ms';
-F4GravelWhite = '20150806145556.736_18ms.3d_18.00ms';
-F4Sand = '20150730102559.874_43ms.3d_43.00ms';
-F4SandWhite = '20150730102726.378_16ms.3d_16.00ms';
-
-F1Blue = '20150814104945.840_31ms.3d_31.00ms';
-F2Blue = '20150814105334.625_27ms.3d_27.00ms';
-F3Blue = '20150814104909.756_31ms.3d_31.00ms';
-F5Blue = '20150814105011.556_31ms.3d_31.00ms';
-F135BlueWhite = '20150814105114.261_12ms.3d_12.00ms';
-F2BlueWhite = '20150814105518.394_12ms.3d_12.00ms';
-
-imvector = {F1Gravel F1Sand F1Blue F2Gravel F2Sand F2Blue F3Gravel F3Sand F3Blue F4Gravel F4Sand F5Blue};
-
 for i = 1:length(imvector)
     readimg = imread([imvector{i}, '_Global_Ref.jpg']);
     img = roipoly(readimg);
@@ -263,17 +232,122 @@ for i = 1:length(blackrefs)
     SegmentImage(blackrefs(i).name, blackrefs(i).name);
 end
 
+% quant cone images -- what metrics do i want?
+gravelrefs = dir('ConeImages/Gravel/*_Global_Ref');
+GravelAll = zeros(1, length(gravelrefs));
+GravelAnimal = zeros(1, length(gravelrefs));
+for i = 1:length(gravelrefs)
+    [GravelAll(i), GravelAnimal(i)] = QuantBuzzardConeImages('ConeImages/Gravel', gravelrefs(i).name);
+    pause
+    close all;
+end
 
 
 
 
+[num, txt, raw] = xlsread('flaggedflounder.xls');
+
+% eval2 testing on gravel
+Directory = 'ConeImages/Gravel';
+graveldir = dir('ConeImages/Gravel/*_Global_Ref');
+
+for i = 1:length(graveldir)
+    for j = 2:length(raw(:,1))
+        stringfriend = strsplit(raw{j,1}, '/');
+        refname = stringfriend{2};
+        if strcmp(graveldir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
+            [PE1(i), CE1(i,:)] = Eval2(Directory, graveldir(i).name);
+            pause
+            close all;
+        end
+    end
+end
+
+for i = 1:length(PE1)
+    tempctrl = CE1(i,:);
+    temppct = PE1(i);
+    dist = tempctrl(tempctrl >= temppct);
+    pct = length(dist)/length(tempctrl);
+    gravelpct(i) = pct;
+    mean(gravelpct)
+end
+% mean = 0.0266 (~3%)
+
+% eval2 sand
+Directory = 'ConeImages/Sand';
+sanddir = dir('ConeImages/Sand/*_Global_Ref');
+for i = 1:length(sanddir)
+    for j = 2:length(raw(:,1))
+        stringfriend = strsplit(raw{j,1}, '/');
+        refname = stringfriend{2};
+        if strcmp(sanddir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
+            [PE2(i), CE2(i,:)] = Eval2(Directory, sanddir(i).name);
+            close all;
+        end
+    end
+end
+for i = 1:length(PE2)
+    tempctrl = CE2(i,:);
+    temppct = PE2(i);
+    dist = tempctrl(tempctrl >= temppct);
+    pct = length(dist)/length(tempctrl);
+    sandpct(i) = pct;
+    mean(sandpct)
+end
+% mean = 0.0131 (~1%)
+
+Directory = 'ConeImages/Blue';
+bluedir = dir('ConeImages/Blue/*_Global_Ref');
+for i = 1:length(bluedir)
+    for j = 2:length(raw(:,1))
+        stringfriend = strsplit(raw{j,1}, '/');
+        refname = stringfriend{2};
+        if strcmp(bluedir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
+            [BluePE(i), BlueCE(i,:)] = Eval2(Directory, bluedir(i).name);
+            close all;
+        end
+    end
+end
+for i = 1:length(BluePE)
+    tempctrl = BlueCE(i,:);
+    temppct = BluePE(i);
+    dist = tempctrl(tempctrl >= temppct);
+    pct = length(dist)/length(tempctrl);
+    bluepct(i) = pct;
+end
+% mean(bluepct) = 0.1065
+mean(BluePE1)
+mean2(BlueCE1)
+mean(BluePE1)/mean2(BlueCE1);
+
+Directory = 'ConeImages/Black Flags'
+blackdir = dir('ConeImages/Black Flags/*_Global_Ref');
+BlackPE1 = zeros(1, length(blackdir));
+BlackCE1 = zeros(length(blackdir), 500);
+for i = 1:length(blackdir)
+    [BlackPE1(i), BlackCE1(i,:)] = Eval2(Directory, blackdir(i).name);
+    close all
+end
+for i = 1:length(BlackPE1)
+    tempctrl = BlackCE1(i,:);
+    temppct = BlackPE1(i);
+    dist = tempctrl(tempctrl >= temppct);
+    pct = length(dist)/length(tempctrl);
+    blackpct(i) = pct;
+    mean(blackpct)
+end
+% mean(blackpct) = 0 (unsurprising)
+
+rogerref = dir('Roger/*_Global_Ref');
 
 
+lizdir = dir('Flagged Files/*.mat');
 
-
-
-
-
+for i = 4:10
+    [PE(i-1), CE(i-1,:)] = Eval2('Flagged Files', lizdir(i).name);
+    pause
+    close all;
+end
 
 
 

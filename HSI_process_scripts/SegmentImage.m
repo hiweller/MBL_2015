@@ -10,23 +10,25 @@ refimg = imread(['Masks/', Refname]);
 figure
 imshow(refimg);
 readimg = imread(['Masks/', Filename]);
-aroiwindow = CROIEditor(readimg);
+artifactroi = roipoly(readimg);
+% aroiwindow = CROIEditor(readimg);
 disp('Create non-artifact mask');
 pause
 % ROI GUI will pop up; draw polygon around anything you don't want analyses
 % to ignore (both animal + background but not artificial things)
 % click apply when done, DO NOT QUIT GUI WINDOW, return to command window
 % and hit any key
-[artifactroi, labels, number] = getROIData(aroiwindow);
+% [artifactroi, labels, number] = getROIData(aroiwindow);
 save(['Masks/GeneralMask_', imgname, '.mat'], 'artifactroi');
-delete(aroiwindow);
+% delete(aroiwindow);
 
-roiwindow = CROIEditor(readimg);
+% roiwindow = CROIEditor(readimg);
+animalroi = roipoly(readimg);
 disp('Create animal mask');
 pause
-[animalroi, labels, number] = getROIData(roiwindow);
+% [animalroi, labels, number] = getROIData(roiwindow);
 save(['Masks/AnimalMask_', imgname, '.mat'], 'animalroi');
-delete(roiwindow);
+% delete(roiwindow);
 
 bgwindow = CROIEditor(readimg);
 disp('Create background mask');

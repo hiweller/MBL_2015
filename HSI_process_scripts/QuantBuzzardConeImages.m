@@ -1,12 +1,12 @@
-function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantBuzzardConeImages(Directory,Filename)
+function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantBuzzardConeImages(Directory,GlobalRefImg)
 % Modified from CC's M-code in 2014
-% Example: GetRaptorConeImages_UsingRadianceData('June07_lizards','20150607114429.409_8ms.3d_8.00ms')
+% Example: QuantBuzzardConeImages('ConeImages', 'GlobalRefFile')
 
 load Buzzard4Cones.dat; % 4x16 (V,S,M,L) % load Buzzard4Cones.dat; % 1x16
 load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but more realistic) 
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
-RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
+RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
 
 % figure
 for i = 1:16
@@ -16,10 +16,7 @@ for i = 1:16
     TempImg(isnan(TempImg)) = 0; % find NaN in the image file
     % make reflectance NaN (because of noise) equal 0
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
-%     subplot(4,4,i), imshow(RefObjectImg(:,:,i)); %title(WaveNumber((i-1)*5+1:i*5));
 end
-% ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
-% text(0.5, 1,'\bf Radiance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
 for i = 1:16
     Uimg(:,:,i) = RefObjectImg(:,:,i)*Buzzard4Cones(1,i); % use Up direction of light field
@@ -96,7 +93,7 @@ imshow(DconeAdpNorm); title('Double cone');
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
-    img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+    img(:,:,i) = edge_Otsu(DconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
 end
 for i = 1:10
     imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
@@ -167,7 +164,7 @@ w1 = w4/(sqrt(Pc1)/sqrt(Pc4)); % Weber fraction estimate of U Cone
 w2 = w4/(sqrt(Pc2)/sqrt(Pc4)); % Weber fraction estimate of S Cone
 w3 = w4/(sqrt(Pc2)/sqrt(Pc4)); % Weber fraction estimate of M Cone
 
-noart = importdata(['Masks/GeneralMask_', Filename, '.mat']);
+noart = importdata(['Masks/GeneralMask_SegImg_', GlobalRefImg, '.png.mat']);
 
 % compare to average of the image
 df1 = UconeAdp - mean2(UconeAdp.*noart); 
@@ -185,8 +182,8 @@ colorbar;
 
 AvgTetraDist_AllImage = mean(TetraDist(:))
 
-rect = importdata(['Masks/BGMask_', Filename, '.mat']);
-BW_Animal = importdata(['Masks/AnimalMask_', Filename, '.mat']);
+rect = importdata(['Masks/BGMask_SegImg_', GlobalRefImg, '.png.mat']);
+BW_Animal = importdata(['Masks/AnimalMask_SegImg_', GlobalRefImg, '.png.mat']);
 
 BK_U_Comp = mean2(UconeAdp.*rect);
 BK_S_Comp = mean2(SconeAdp.*rect);
@@ -204,6 +201,7 @@ TetraDist(find(TetraDist > 10)) = 10; % get rid of image artifacts (JND value ab
 figure
 % colormap(gray)
 imagesc(TetraDist); axis off; axis image;
+
 colorbar;
 
 % AvgTetraDist_SelectedBackground = mean(TetraDist(:))

@@ -3,6 +3,8 @@ load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
 AniMask = importdata(['Masks/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
 RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
+% load([Directory, '/', GlobalRefImg]);
+% RefObjectImg = BandImg;
 
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
@@ -80,7 +82,7 @@ DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_
 
 % Edge detection (Laplacian of Gaussian (Stevens and Cuthill, PRSB 2006)
 for i = 1:11
-    img(:,:,i) = edge_Otsu(LconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
+    img(:,:,i) = edge_Otsu(DconeAdpNorm, 'log', [], (i/2)); % adaptive thresholding (Otsu, 1979)
 end
 for i = 1:10
     imgp(:,:,i) = img(:,:,i) & img(:,:,(i+1));
@@ -144,8 +146,11 @@ while successcount < 500
           end
       end
       overlap = ismember(xyrot, Dcoords, 'rows');
-      CtrlEdge1pixel(successcount) = length(find(overlap))/length(xyarray(:,1));
+      CtrlEdge1pixel(successcount) = length(find(overlap))/length(find(isnan(xyrot(:,1))==0));
   end
+  
+  
+%   quantile = 'fjdalks';
 
 end
 hold off;
