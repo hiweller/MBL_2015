@@ -410,4 +410,12 @@ for i = 1:length(JNDdir)
 end
 
 
+maskdir = dir('Masks/*.mat');
+for i = 74:length(maskdir)
+    stringfriend = strsplit(maskdir(i).name, '_');
+    newname = sprintf('%s%s%s%s%s%s%s%s', stringfriend{1}, '_', stringfriend{2}, '_', stringfriend{3}, '_', stringfriend{4}, '.Rad4U.mat');
+    movefile(['Masks/', maskdir(i).name], ['Masks/', newname]);
+end
+
+
 

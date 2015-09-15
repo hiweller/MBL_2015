@@ -1,4 +1,4 @@
-function QuantRaptorConeImages(Directory,Filename)
+function QuantRaptorConeImages(Directory,Rad4Umat)
 % Modified from CC's M-code in 2014
 % Example: GetRaptorConeImages_UsingRadianceData('June07_lizards','20150607114429.409_8ms.3d_8.00ms')
 
@@ -6,15 +6,16 @@ load Buzzard4Cones.dat; % 4x16 (V,S,M,L) % load Buzzard4Cones.dat; % 1x16
 load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but more realistic) 
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
-% BandImg
-RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
+load([Directory, '/', Rad4Umat]);
+RefObjectImg = BandImg;
+% RefObjectImg = importdata([Directory, '/', Filename, '_Global_Ref'], 1);
 
 figure
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1; % make reflectance larger than one equal 1 
-    TempImg(isnan(TempImg)) = 0; % find NaN in the image file
+    % TempImg(isnan(TempImg)) = 0; % find NaN in the image file
     % make reflectance NaN (because of noise) equal 0
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
     subplot(4,4,i), imshow(RefObjectImg(:,:,i)); %title(WaveNumber((i-1)*5+1:i*5));

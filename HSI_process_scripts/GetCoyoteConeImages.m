@@ -1,18 +1,10 @@
-function GetStriperConeImages(Directory, Rad4Umat,DateLight,LightNum,LightDirection)
-% 542, 612 nm
-% ConeImages/FlounderNum/Substrate/Global_Ref_File
-% always start in ConeImages!
-% GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
+function GetCoyoteConeImages(Directory, Rad4Umat)
+load Coyote2Cones.dat % 2x16 (S, L) -- 431, 555 nm
 
-% load .dat file (should be in ConeImages)
-load Striper2Cones.dat % 2x16 (S, L)
-
-% ImgFilename = [DirImg, '_Global_Ref'];
-LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
+% LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
+% load(LightFilename);
 load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
-% RefObjectImg = importdata(ImgFilename, 1);
-load(LightFilename);
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
@@ -26,13 +18,14 @@ for i = 1:16
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
     subaxis(4,4,i, 'Spacing', 0.03), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
 end
+
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center','VerticalAlignment', 'top');
 
 % get color information for buzzard cones
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Striper2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Striper2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Coyote2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Coyote2Cones(2,i);
 end
 
 % summation across all wavelengths
@@ -47,12 +40,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
+    S_bk(i) = Background(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
+    L_bk(i) = Background(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
+    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -86,7 +79,7 @@ figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
 % 542 nm = M and S (G/B) channels
-LSimg(:,:,1) = LconeAdpNorm; LSimg(:,:,2) = SconeAdpNorm; LSimg(:,:,3) = SconeAdpNorm;
+LSimg(:,:,1) = LconeAdpNorm; LSimg(:,:,2) = LconeAdpNorm; LSimg(:,:,3) = SconeAdpNorm;
 
 figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(SconeAdpNorm); title('S cone');
@@ -100,7 +93,7 @@ ConeNorm = (SconeAdpNorm+LconeAdpNorm)/2;
 IsoSconeAdpNorm = SconeAdpNorm - ConeNorm;
 IsoLconeAdpNorm = LconeAdpNorm - ConeNorm;
 
-IsoLSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,2) = (IsoSconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
+IsoLSimg(:,:,1) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,2) = (IsoLconeAdpNorm+3/4)/(6/4); IsoLSimg(:,:,3) = (IsoSconeAdpNorm+3/4)/(6/4);
 
 figure
 imshow(IsoLSimg); title('Iso-LS');
@@ -125,10 +118,10 @@ subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
 FlounDir = sprintf('%s%s', Directory, '/');
 
-TiffWrite(FlounDir, DirImg, 'Striper_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_LS', LSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoLS', IsoLSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Coyote_DCimg', LconeAdpNorm, 'bw');
+TiffWrite(FlounDir, DirImg, 'Coyote_LoG', Lcone_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Coyote_LS', LSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Coyote_IsoLS', IsoLSimg, 'rgb');
+TiffWrite(FlounDir, DirImg, 'Coyote_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+TiffWrite(FlounDir, DirImg, 'Coyote_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

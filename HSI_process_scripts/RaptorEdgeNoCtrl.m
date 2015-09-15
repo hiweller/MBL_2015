@@ -1,18 +1,18 @@
-function [PercentEdge1pixel] = RaptorEdgeNoCtrl(Directory, GlobalRefImg)
+function [PercentEdge1pixel] = RaptorEdgeNoCtrl(Directory, Rad4Umat)
 load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
-AniMask = importdata(['Masks/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
+AniMask = importdata(['Masks/AnimalMask_SegImg_', Rad4Umat], 1);
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
-load([Directory, '/', GlobalRefImg]);
+load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
 
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1; % make reflectance larger than one equal 1 
-    inx_nan = isnan(TempImg); % find NaN in the image file
-    inx2 = find(inx_nan == 1);
-    TempImg(inx2) = 0; % make reflectance NaN (because of noise) equal 0
+    % inx_nan = isnan(TempImg); % find NaN in the image file
+    % inx2 = find(inx_nan == 1);
+    % TempImg(inx2) = 0; % make reflectance NaN (because of noise) equal 0
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
 end
 

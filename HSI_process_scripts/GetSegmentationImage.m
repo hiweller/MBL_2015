@@ -1,6 +1,4 @@
-function GetSegmentationImage(Directory, Filename)
-% ConeImages/FlounderNum/Substrate/Global_Ref_File
-% always start in ConeImages!
+function GetSegmentationImage(Directory, Rad4Umat)
 % GBCI('Flagged Files', '12345.Rad4U.mat')
 
 % load .dat file (should be in ConeImages)
@@ -8,7 +6,7 @@ load Buzzard4Cones.dat % 4x16 (UV, S, M, L)
 load ChickenDoubleCone.dat %1x16
 
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
-load([Directory, '/', Filename]);
+load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
 % RefObjectImg = importdata([Directory, '/', Filename], 1);
 
@@ -20,7 +18,7 @@ for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1;% make reflectance larger than one equal 1 
-    TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
+%     TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
 end
 
@@ -126,6 +124,6 @@ SaveImg(:,:,2) = (1-alpha_data).*LMSimg(:,:,2) + alpha_data;
 SaveImg(:,:,3) = (1-alpha_data).*LMSimg(:,:,3) + alpha_data;
 
 % imwrite(SaveImg, ['Samples/SegImg_', Filename, '.png'], 'png');
-imwrite(Dcone_img, ['Samples/EdgeDetection_', Filename, '.png'], 'png');
+imwrite(Dcone_img, ['Samples/SegImg_', Rad4Umat, '.png'], 'png');
 
 end

@@ -1,7 +1,4 @@
-function EdgeDetection_UsingRadianceData(Directory,Filename)
-% Example: EvaluateEdgeDetection_UsingRadianceData('Flounders/Blue','20150814104945.840_31ms.3d_31.00ms')
-% Example: EvaluateEdgeDetection_UsingRadianceData('Flounders/Gravel','20150724110559.555_33ms.3d_33.00ms')
-% Example: EvaluateEdgeDetection_UsingRadianceData('Flounders/Sand','20150730101055.833_42ms.3d_42.00ms')
+function EdgeDetection_UsingRadianceData(Directory,Rad4Umat)
 
 load Raptor4Cones.dat; % 4x16 (V,S,M,L) % load Raptor4Cones.dat; % 1x16
 load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but more realistic) 

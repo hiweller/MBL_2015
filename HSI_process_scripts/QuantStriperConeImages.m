@@ -1,4 +1,4 @@
-function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantStriperConeImages(Directory,GlobalRefImg)
+function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantStriperConeImages(Directory,Rad4Umat)
 % Modified from CC's M-code in 2014
 % Example: QuantBuzzardConeImages('ConeImages', 'GlobalRefFile')
 
@@ -6,14 +6,16 @@ load Striper2Cones.dat; % 4x16 (V,S,M,L) % load Striper2Cones.dat; % 1x16
 % load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but more realistic) 
 % ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
-RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
+load([Directory, '/', Rad4Umat]);
+RefObjectImg = BandImg;
+% RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
 
 % figure
 for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1; % make reflectance larger than one equal 1 
-    TempImg(isnan(TempImg)) = 0; % find NaN in the image file
+    % TempImg(isnan(TempImg)) = 0; % find NaN in the image file
     % make reflectance NaN (because of noise) equal 0
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
 end
@@ -21,20 +23,14 @@ end
 for i = 1:16
     Simg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(1,i); % use Up direction of light field
     Limg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(2,i);
-%     Mimg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(3,i);
-%     Limg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(4,i);
-%     Dimg(:,:,i) = RefObjectImg(:,:,i)*ChickenDoubleCone(i); % double cone
 end
 
 Scone = sum(Simg,3); % summation across all wavelengths
 Lcone = sum(Limg,3);
-% Mcone = sum(Mimg,3);
-% Lcone = sum(Limg,3);
-% Dcone = sum(Dimg,3);
 
 figure
 RadImg(:,:,1) = Lcone;
-RadImg(:,:,2) = Lcone;
+RadImg(:,:,2) = Scone;
 RadImg(:,:,3) = Scone;
 imshow(RadImg);
 
@@ -48,19 +44,10 @@ BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 for i = 1:16
     S_bk(i) = Background(i)*Striper2Cones(1,i); 
     L_bk(i) = Background(i)*Striper2Cones(2,i);
-%     M_bk(i) = Background(i)*Striper2Cones(3,i);
-%     L_bk(i) = Background(i)*Striper2Cones(4,i);
-%     D_bk(i) = Background(i)*ChickenDoubleCone(i);
     S_White(i) = WhiteSurface(i)*Striper2Cones(1,i); 
     L_White(i) = WhiteSurface(i)*Striper2Cones(2,i);
-%     M_White(i) = WhiteSurface(i)*Striper2Cones(3,i);
-%     L_White(i) = WhiteSurface(i)*Striper2Cones(4,i);
-%     D_White(i) = WhiteSurface(i)*ChickenDoubleCone(i);
     S_Black(i) = BlackSurface(i)*Striper2Cones(1,i); 
     L_Black(i) = BlackSurface(i)*Striper2Cones(2,i);
-%     M_Black(i) = BlackSurface(i)*Striper2Cones(3,i);
-%     L_Black(i) = BlackSurface(i)*Striper2Cones(4,i);
-%     D_Black(i) = BlackSurface(i)*ChickenDoubleCone(i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -68,26 +55,14 @@ inxS = find(Scone == 0);
 Scone(inxS) = sum(S_Black);
 inxL = find(Lcone == 0);
 Lcone(inxL) = sum(L_Black);
-% inxM = find(Mcone == 0);
-% Mcone(inxM) = sum(M_Black);
-% inxL = find(Lcone == 0);
-% Lcone(inxL) = sum(L_Black);
-% inxD = find(Dcone == 0);
-% Dcone(inxD) = sum(D_Black);
+
 
 SconeAdp = log(Scone/sum(S_bk)); % adapted to background and log-transformed (Ln)
 LconeAdp = log(Lcone/sum(L_bk)); 
-% MconeAdp = log(Mcone/sum(M_bk)); 
-% LconeAdp = log(Lcone/sum(L_bk)); 
-% DconeAdp = log(Dcone/sum(D_bk)); 
 
 % normalized to a range from 0 to 1 (for display purpose), using black and white surfaces
 SconeAdpNorm = (SconeAdp - log(sum(S_Black)/sum(S_bk)))/(log(sum(S_White)/sum(S_bk)) - log(sum(S_Black)/sum(S_bk)));
 LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_bk)) - log(sum(L_Black)/sum(L_bk)));
-% MconeAdpNorm = (MconeAdp - log(sum(M_Black)/sum(M_bk)))/(log(sum(M_White)/sum(M_bk)) - log(sum(M_Black)/sum(M_bk)));
-% LconeAdpNorm = (LconeAdp - log(sum(L_Black)/sum(L_bk)))/(log(sum(L_White)/sum(L_bk)) - log(sum(L_Black)/sum(L_bk)));
-% DconeAdpNorm = (DconeAdp - log(sum(D_Black)/sum(D_bk)))/(log(sum(D_White)/sum(D_bk)) - log(sum(D_Black)/sum(D_bk)));
-
 figure
 imshow(LconeAdpNorm); title('Double cone');
 
@@ -103,20 +78,8 @@ Lcone_img = double(imgp(:,:,1)+imgp(:,:,2)+imgp(:,:,3)+imgp(:,:,4)+imgp(:,:,5)+i
 figure
 imshow(Lcone_img); title('Edge detection using Laplacian of Gaussian model');
 
-LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = LconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
-% MSUimg(:,:,1) = MconeAdpNorm; MSUimg(:,:,2) = SconeAdpNorm; MSUimg(:,:,3) = UconeAdpNorm;
+LMSimg(:,:,1) = LconeAdpNorm; LMSimg(:,:,2) = SconeAdpNorm; LMSimg(:,:,3) = SconeAdpNorm;
 
-% figure
-% subplot(2,2,1), imshow(UconeAdpNorm); title('V cone');
-% subplot(2,2,2), imshow(SconeAdpNorm); title('S cone');
-% subplot(2,2,3), imshow(MconeAdpNorm); title('M cone');
-% subplot(2,2,4), imshow(LconeAdpNorm); title('L cone');
-
-% figure
-% subplot(1,2,1), imshow(LMSimg); title('LMS');
-% subplot(1,2,2), imshow(MSUimg); title('MSV (Pseudo-UV image)');
-
-% IsoUconeAdpNorm = UconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 IsoSconeAdpNorm = SconeAdpNorm - (SconeAdpNorm+LconeAdpNorm)/2;
 % IsoMconeAdpNorm = MconeAdpNorm - (UconeAdpNorm+SconeAdpNorm+MconeAdpNorm+LconeAdpNorm)/4;
 IsoLconeAdpNorm = LconeAdpNorm - (SconeAdpNorm+LconeAdpNorm)/2;
