@@ -1,7 +1,7 @@
-function [PercentEdge1pixel, CtrlEdge1pixel] = Eval2(Directory, GlobalRefImg)
+function [PercentEdge1pixel] = RaptorEdgeNoCtrl(Directory, GlobalRefImg)
 load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
-AniMask = importdata(['Samples/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
+AniMask = importdata(['Masks/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
 load([Directory, '/', GlobalRefImg]);
 RefObjectImg = BandImg;
@@ -96,62 +96,4 @@ DetectedEdge = (BWoutline + Dcone_img) > 1;  % detected edge segments fall on th
 figure, imshow(BWoutline);
 figure, imshow(DetectedEdge);
 PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:))
-
-% get coordinates
-[y,x] = find(BWoutline==1);
-xyarray = horzcat(x,y);
-[xd, xy] = find(Dcone_img > 0);
-Dcoords = horzcat(xd, xy);
-
-% get CoM
-% stats = regionprops(AniMask, DconeAdpNorm, {'WeightedCentroid'});
-stats = regionprops(AniMask, 'Centroid'); % do we want WeightedCentroid instead?
-CoM = stats.Centroid;
-
-imshow(AniMask); hold on;
-successcount = 0;
-CtrlEdge1pixel = zeros(1,500);
-
-while successcount < 500
-%     generate new random location for CoM
-  CoMprime = randi([1 512], 1, 2);
-  
-  
-%   there is probably some super elegant way to translate...this...but...
-%   #CODELIKEABIOLOGIST (c/o westneat lab ideology)
-%   translate coordinates to have new CoM as centroid
-  diff = CoMprime - CoM;
-  xprime = round(x+diff(1));
-  yprime = round(y+diff(2));
-  
-  xyprime = horzcat(xprime, yprime);
-  
-%   ROTATE MY FRIEND
-  theta = 2*pi*rand; % generate random angle for rotation
-  RotMatrix = [cos(theta) -sin(theta); sin(theta) cos(theta)]; % rotation matrix
-  center = repmat(CoMprime,length(xprime),1); 
-  xytemp = xyprime - center; % move center of outline to origin for rotation
-  temprot = xytemp*RotMatrix; % rotate outline
-  xytemp = temprot+center; % move back to original center
-  xyrot = round(xytemp);
-  
-  findfailures = ismember(xyarray, xyrot, 'rows');
-  findnegs = xyprime(xyprime < 0);
-  if isempty(find(findfailures)) == 1
-      plot(xyrot(:,1), xyrot(:,2), '.')
-      successcount = successcount+1;
-      for i = 1:length(xyrot(:,1))
-          if xyrot(i,1) < 1 | xyrot(i,2) < 1 | xyrot(i,1) > 512 | xyrot(i,2) > 512
-              xyrot(i,:) = NaN;
-          end
-      end
-      overlap = ismember(xyrot, Dcoords, 'rows');
-      CtrlEdge1pixel(successcount) = length(find(overlap))/length(find(isnan(xyrot(:,1))==0));
-  end
-
-end
-hold off;
-figure
-hist(CtrlEdge1pixel);
-
 end

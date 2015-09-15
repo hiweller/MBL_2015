@@ -1,9 +1,9 @@
-function [PercentEdge1pixel, CtrlEdge1pixel] = Eval2(Directory, GlobalRefImg)
+function [ctrlvector] = EdgeCtrl(OutlineRef, ImageRef)
 load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
-AniMask = importdata(['Samples/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
+AniMask = importdata(['Masks/AnimalMask_SegImg_', OutlineRef, '.png.mat'], 1);
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
-load([Directory, '/', GlobalRefImg]);
+load(['Flagged Files/', ImageRef]);
 RefObjectImg = BandImg;
 
 for i = 1:16
@@ -95,7 +95,7 @@ BWoutline = bwperim(AniMask,8);  % get animal outline
 DetectedEdge = (BWoutline + Dcone_img) > 1;  % detected edge segments fall on the animal outline
 figure, imshow(BWoutline);
 figure, imshow(DetectedEdge);
-PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:))
+PercentEdge1pixel = sum(DetectedEdge(:))/sum(BWoutline(:));
 
 % get coordinates
 [y,x] = find(BWoutline==1);
@@ -135,16 +135,26 @@ while successcount < 500
   xytemp = temprot+center; % move back to original center
   xyrot = round(xytemp);
   
-  findfailures = ismember(xyarray, xyrot, 'rows');
-  findnegs = xyprime(xyprime < 0);
-  if isempty(find(findfailures)) == 1
+%   find areas outside realm of image and ignore them
+  for i = 1:length(xyrot(:,1))
+      if xyrot(i,1) < 1 | xyrot(i,2) < 1 | xyrot(i,1) > 512 | xyrot(i,2) > 512
+          xyrot(i,:) = NaN;
+      end
+  end
+%   if using outline image to find control outlines, don't have them
+%   overlap w the animal
+  if strcmp(OutlineRef, ImageRef) == 1
+      findfailures = ismember(xyarray, xyrot, 'rows');
+      if isempty(find(findfailures)) == 1
+          plot(xyrot(:,1), xyrot(:,2), '.')
+          successcount = successcount+1;
+          overlap = ismember(xyrot, Dcoords, 'rows');
+          CtrlEdge1pixel(successcount) = length(find(overlap))/length(find(isnan(xyrot(:,1))==0));
+      end
+%       otherwise put them wherever
+  elseif strcmp(OutlineRef, ImageRef) == 0
       plot(xyrot(:,1), xyrot(:,2), '.')
       successcount = successcount+1;
-      for i = 1:length(xyrot(:,1))
-          if xyrot(i,1) < 1 | xyrot(i,2) < 1 | xyrot(i,1) > 512 | xyrot(i,2) > 512
-              xyrot(i,:) = NaN;
-          end
-      end
       overlap = ismember(xyrot, Dcoords, 'rows');
       CtrlEdge1pixel(successcount) = length(find(overlap))/length(find(isnan(xyrot(:,1))==0));
   end
@@ -153,5 +163,6 @@ end
 hold off;
 figure
 hist(CtrlEdge1pixel);
+ctrlvector = CtrlEdge1pixel;
 
 end

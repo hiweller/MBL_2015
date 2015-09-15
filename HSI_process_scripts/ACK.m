@@ -349,6 +349,65 @@ for i = 4:10
     close all;
 end
 
+% for flounder gravel/sand, leopard lizard sun/shade, horned lizard sun/shade
+sampledir = dir('Samples/*.3d.Rad4U.mat');
+for i = 1:length(sampledir)
+    QuantBuzzardConeImages('Samples', sampledir(i).name);
+    
+    close all;
+    
+    [PctEdge(i), PctCtrl(i,:)] = Eval2('Samples', sampledir(i).name);
+    
+    close all;
+end
+
+
+% looking at color diffs
+JNDdir = dir('Samples/JND/*.mat');
+sampledir = dir('Samples/*.3d.Rad4U.mat');
+for i = 1:length(JNDdir)
+    JNDimg = importdata(['Samples/JND/', JNDdir(i).name], 1);
+    imagesc(JNDimg); axis off; axis image;
+    colorbar;
+    pause
+%     rect = importdata(['Samples/BGMask_SegImg_', sampledir(i).name, '.png.mat']);
+    BW_Animal = importdata(['Samples/AnimalMask_SegImg_', sampledir(i).name, '.png.mat']);
+    AnimalDist = JNDimg.*BW_Animal;
+    imagesc(AnimalDist); axis off; axis image; colorbar;
+    pause
+    close all;
+end
+
+% looking at edge detection
+load PctEdge.mat;
+load PctCtrl.mat;
+JNDdir = dir('Samples/JND/*.mat');
+sampledir = dir('Samples/*.3d.Rad4U.mat');
+for i = 1:length(JNDdir)
+    JNDimg = importdata(['Samples/JND/', JNDdir(i).name], 1);
+    figure;
+    imagesc(JNDimg); axis off; axis image;
+    colorbar;
+    pause
+    BW_Animal = importdata(['Samples/AnimalMask_SegImg_', sampledir(i).name, '.png.mat']);
+    AnimalDist = JNDimg.*BW_Animal;
+    figure; imagesc(AnimalDist); axis off; axis image; colorbar;
+    pause
+    SegImg = imread(['EdgeDetection_', sampledir(i).name, '.png']);
+    figure; imshow(SegImg);
+    pause
+    temppct = PctEdge(i)
+    tempctrl = PctCtrl(i,:);
+    dist = tempctrl(tempctrl >= temppct);
+    pct = length(dist)/length(tempctrl)
+    TotalPcts(i) = pct; 
+    figure; hist(PctCtrl(i,:), 30); hold on;
+    line([temppct temppct], [0 40], 'LineStyle', '--', 'Color', [1 0 0]); hold off;
+    pause
+    tilefigs
+    pause
+    close all
+end
 
 
 

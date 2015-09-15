@@ -17,7 +17,7 @@ end
 
 if isempty(varargin)
     %*% defaults
-    bad_pixel_mask_flag = 0;
+    bad_pixel_mask_flag = 1;
     darknoisesubtraction_flag = 1;
     flatfieldcorrection_leif_flag = 1;
     flatfieldcorrection_sep_flag = 1;
