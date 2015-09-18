@@ -14,7 +14,7 @@ for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1;% make reflectance larger than one equal 1 
-    % TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
+    TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
     subaxis(4,4,i, 'Spacing', 0.03), imshow(RefObjectImg(:,:,i)); title(WaveNumber(i));
 end
@@ -24,8 +24,8 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 
 % get color information for buzzard cones
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Coyote2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Coyote2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*Coyote2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*Coyote2Cones(2,i);
 end
 
 % summation across all wavelengths
@@ -40,12 +40,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Coyote2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Coyote2Cones(2,i);
+    S_bk(i) = Background(i)*Coyote2Cones(1,i);
+    L_bk(i) = Background(i)*Coyote2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*Coyote2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*Coyote2Cones(2,i);
+    S_Black(i) = BlackSurface(i)*Coyote2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*Coyote2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -116,12 +116,12 @@ figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
-FlounDir = sprintf('%s%s', Directory, '/');
-
-TiffWrite(FlounDir, DirImg, 'Coyote_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Coyote_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Coyote_LS', LSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Coyote_IsoLS', IsoLSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Coyote_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Coyote_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+% FlounDir = sprintf('%s%s', Directory, '/');
+% 
+% TiffWrite(FlounDir, DirImg, 'Coyote_DCimg', LconeAdpNorm, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Coyote_LoG', Lcone_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Coyote_LS', LSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Coyote_IsoLS', IsoLSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Coyote_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Coyote_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

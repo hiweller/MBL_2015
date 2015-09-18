@@ -18,7 +18,7 @@ for i = 1:16
     TempImg = RefObjectImg(:,:,i);
     inx1 = find(TempImg > 1); % find reflectance larger than one
     TempImg(inx1) = 1;% make reflectance larger than one equal 1 
-%     TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
+    TempImg(isnan(TempImg)) = 0; % set NaNs equal to 0 (because of noise)
     RefObjectImg(:,:,i) = TempImg; % reflectance range 0-1
 end
 

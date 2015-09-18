@@ -194,7 +194,7 @@ sanddir = dir('ConeImages/Sand/*_Global_Ref');
 SandPE1 = zeros(1, length(sanddir));
 SandCE1 = zeros(length(sanddir), 500);
 for i = 1:length(sanddir)
-    [SandPE1(i), SandCE1(i,:)] = Eval2(Directory, sanddir(i).name);
+    [SandPE1(i), SandCE1(i,:)] = EvalEdge(Directory, sanddir(i).name);
     pause
     close all;
 end
@@ -248,16 +248,16 @@ end
 [num, txt, raw] = xlsread('flaggedflounder.xls');
 
 % eval2 testing on gravel
-Directory = 'ConeImages/Gravel';
-graveldir = dir('ConeImages/Gravel/*_Global_Ref');
+Directory = 'Flagged Flounder/Gravel';
+graveldir = dir('Flagged Flounder/Gravel/*.Rad4U.mat');
 
 for i = 1:length(graveldir)
     for j = 2:length(raw(:,1))
         stringfriend = strsplit(raw{j,1}, '/');
         refname = stringfriend{2};
-        if strcmp(graveldir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
-            [PE1(i), CE1(i,:)] = Eval2(Directory, graveldir(i).name);
-            pause
+        if strcmp(graveldir(i).name, [refname, '.Rad4U.mat']) == 1 & raw{j,5} == 1
+            [PE1(i), CE1(i,:)] = EvalEdge(Directory, graveldir(i).name);
+%             pause
             close all;
         end
     end
@@ -271,17 +271,17 @@ for i = 1:length(PE1)
     gravelpct(i) = pct;
     mean(gravelpct)
 end
-% mean = 0.0266 (~3%)
+% mean = 0.0315 (~3%)
 
 % eval2 sand
-Directory = 'ConeImages/Sand';
-sanddir = dir('ConeImages/Sand/*_Global_Ref');
-for i = 1:length(sanddir)
+Directory = 'Flagged Flounder/Sand';
+sanddir = dir('Flagged Flounder/Sand/*.Rad4U.mat');
+for i = 5:length(sanddir)
     for j = 2:length(raw(:,1))
         stringfriend = strsplit(raw{j,1}, '/');
         refname = stringfriend{2};
-        if strcmp(sanddir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
-            [PE2(i), CE2(i,:)] = Eval2(Directory, sanddir(i).name);
+        if strcmp(sanddir(i).name, [refname, '.Rad4U.mat']) == 1 & raw{j,5} == 1
+            [PE2(i-2), CE2(i-2,:)] = EvalEdge(Directory, sanddir(i).name);
             close all;
         end
     end
@@ -294,16 +294,16 @@ for i = 1:length(PE2)
     sandpct(i) = pct;
     mean(sandpct)
 end
-% mean = 0.0131 (~1%)
+% mean = 0.0131, 0.0057(~1%)
 
-Directory = 'ConeImages/Blue';
-bluedir = dir('ConeImages/Blue/*_Global_Ref');
+Directory = 'Flagged Flounder/Blue';
+bluedir = dir('Flagged Flounder/Blue/*.Rad4U.mat');
 for i = 1:length(bluedir)
     for j = 2:length(raw(:,1))
         stringfriend = strsplit(raw{j,1}, '/');
         refname = stringfriend{2};
-        if strcmp(bluedir(i).name, [refname, '_Global_Ref']) == 1 & raw{j,5} == 1
-            [BluePE(i), BlueCE(i,:)] = Eval2(Directory, bluedir(i).name);
+        if strcmp(bluedir(i).name, [refname, '.Rad4U.mat']) == 1 & raw{j,5} == 1
+            [BluePE(i), BlueCE(i,:)] = EvalEdge(Directory, bluedir(i).name);
             close all;
         end
     end
@@ -316,16 +316,16 @@ for i = 1:length(BluePE)
     bluepct(i) = pct;
 end
 % mean(bluepct) = 0.1065
-mean(BluePE1)
-mean2(BlueCE1)
-mean(BluePE1)/mean2(BlueCE1);
+mean(BluePE)
+mean2(BlueCE)
+% mean(BluePE)/mean2(BlueCE);
 
-Directory = 'ConeImages/Black Flags'
-blackdir = dir('ConeImages/Black Flags/*_Global_Ref');
+Directory = 'Flagged Flounder/Black'
+blackdir = dir('Flagged Flounder/Black/*.Rad4U.mat');
 BlackPE1 = zeros(1, length(blackdir));
 BlackCE1 = zeros(length(blackdir), 500);
 for i = 1:length(blackdir)
-    [BlackPE1(i), BlackCE1(i,:)] = Eval2(Directory, blackdir(i).name);
+    [BlackPE1(i), BlackCE1(i,:)] = EvalEdge(Directory, blackdir(i).name);
     close all
 end
 for i = 1:length(BlackPE1)
@@ -416,6 +416,8 @@ for i = 74:length(maskdir)
     newname = sprintf('%s%s%s%s%s%s%s%s', stringfriend{1}, '_', stringfriend{2}, '_', stringfriend{3}, '_', stringfriend{4}, '.Rad4U.mat');
     movefile(['Masks/', maskdir(i).name], ['Masks/', newname]);
 end
+
+
 
 
 

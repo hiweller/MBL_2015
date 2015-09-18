@@ -1,4 +1,4 @@
-function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantBuzzardConeImages(Directory,GlobalRefImg)
+function [AvgTetraDist_AllImage, AvgTetraDist_AnimalVsBackground] = QuantBuzzardConeImages(Directory,Rad4Umat)
 % Modified from CC's M-code in 2014
 % Example: QuantBuzzardConeImages('ConeImages', 'GlobalRefFile')
 
@@ -7,7 +7,7 @@ load ChickenDoubleCone.dat; % 1x16 (very similar to PekinRobinDoubleCone, but mo
 ChickenDoubleCone = ChickenDoubleCone/100; % make sensitivity range from 0 to 1
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
-load([Directory, '/', GlobalRefImg]);
+load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
 
 % figure
@@ -183,8 +183,8 @@ w3 = w4/(sqrt(Pc2)/sqrt(Pc4)); % Weber fraction estimate of M Cone
 % 
 % AvgTetraDist_AllImage = mean(TetraDist(:))
 
-rect = importdata(['Samples/BGMask_SegImg_', GlobalRefImg, '.png.mat']);
-BW_Animal = importdata(['Samples/AnimalMask_SegImg_', GlobalRefImg, '.png.mat']);
+rect = importdata(['Masks/BGMask_SegImg_', Rad4Umat]);
+BW_Animal = importdata(['Masks/AnimalMask_SegImg_', Rad4Umat]);
 
 BK_U_Comp = mean2(UconeAdp.*rect);
 BK_S_Comp = mean2(SconeAdp.*rect);
@@ -209,6 +209,6 @@ colorbar;
 
 AnimalOnly = TetraDist.*BW_Animal;
 AvgTetraDist_AnimalVsBackground = sum(AnimalOnly(:))/sum(BW_Animal(:))
-save(['Samples/JND/Raptor_', GlobalRefImg, '.mat'], 'TetraDist');
+% save(['Samples/JND/Raptor_', Rad4Umat, '.mat'], 'TetraDist');
 
 end

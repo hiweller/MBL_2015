@@ -1,9 +1,9 @@
-function [PercentEdge1pixel, CtrlEdge1pixel] = EvalEdge(Directory, GlobalRefImg)
+function [PercentEdge1pixel, CtrlEdge1pixel] = EvalEdge(Directory, Rad4Umat)
 load Buzzard4Cones.dat
 load ChickenDoubleCone.dat
-AniMask = importdata(['Samples/AnimalMask_SegImg_', GlobalRefImg, '.png.mat'], 1);
+AniMask = importdata(['Masks/AnimalMask_SegImg_', Rad4Umat], 1);
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
-load([Directory, '/', GlobalRefImg]);
+load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
 
 for i = 1:16
