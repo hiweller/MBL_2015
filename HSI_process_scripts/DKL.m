@@ -1,4 +1,4 @@
-function dist=KLDiv(P,Q)
+function dist=DKL(P,Q)
 %  dist = KLDiv(P,Q) Kullback-Leibler divergence of two discrete probability
 %  distributions
 %  P and Q  are automatically normalised to have the sum of one on rows

@@ -1,7 +1,7 @@
-function [TetraDist, AnimalOnly] = QuantStriperConeImages(Directory,Rad4Umat)
+function [TetraDist, AnimalOnly] = QuantWFlounderConeImages(Directory,Rad4Umat)
 % Modified from CC's M-code in 2014
 % Example: QuantBuzzardConeImages('ConeImages', 'GlobalRefFile')
-load Striper2Cones.dat; % 4x16 (V,S,M,L) % load Striper2Cones.dat; % 1x16
+load Pamericanus2Cones.dat; % 4x16 (V,S,M,L) % load Pamericanus2Cones.dat; % 1x16
 load('BadPixelMask.mat');
 WaveNumber = ['360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'];
 % RefObjectImg = importdata([Directory, '/', GlobalRefImg], 1);
@@ -19,8 +19,8 @@ for i = 1:16
 end
 
 for i = 1:16  % use Up direction of light field
-    Simg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(2,i); % double cone
+    Simg(:,:,i) = RefObjectImg(:,:,i)*Pamericanus2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*Pamericanus2Cones(2,i); % double cone
 end
 
 Lcone = sum(Limg,3); % summation across all wavelengths
@@ -40,12 +40,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*Striper2Cones(1,i);
-    L_bk(i) = Background(i)*Striper2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*Striper2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*Striper2Cones(2,i); 
-    S_Black(i) = BlackSurface(i)*Striper2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*Striper2Cones(2,i);
+    S_bk(i) = Background(i)*Pamericanus2Cones(1,i);
+    L_bk(i) = Background(i)*Pamericanus2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*Pamericanus2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*Pamericanus2Cones(2,i); 
+    S_Black(i) = BlackSurface(i)*Pamericanus2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*Pamericanus2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -97,6 +97,6 @@ colorbar;
 
 AnimalOnly = TetraDist.*BW_Animal;
 AvgTetraDist_AnimalVsBackground = sum(AnimalOnly(:))/sum(BW_Animal(:))
-save([Directory, '/JND/Striper_', Rad4Umat], 'TetraDist');
+save([Directory, '/JND/WFlounder_', Rad4Umat], 'TetraDist');
 
 end

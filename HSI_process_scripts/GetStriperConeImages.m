@@ -1,4 +1,4 @@
-function GetStriperConeImages(Directory, Rad4Umat,DateLight,LightNum,LightDirection)
+function GetStriperConeImages(Directory, Rad4Umat)
 % 542, 612 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
@@ -8,11 +8,11 @@ function GetStriperConeImages(Directory, Rad4Umat,DateLight,LightNum,LightDirect
 load Striper2Cones.dat % 2x16 (S, L)
 
 % ImgFilename = [DirImg, '_Global_Ref'];
-LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
+% LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
 load([Directory, '/', Rad4Umat]);
 RefObjectImg = BandImg;
 % RefObjectImg = importdata(ImgFilename, 1);
-load(LightFilename);
+% load(LightFilename);
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
@@ -31,8 +31,8 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 
 % get color information for buzzard cones
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Striper2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Striper2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*Striper2Cones(2,i);
 end
 
 % summation across all wavelengths
@@ -47,12 +47,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Striper2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Striper2Cones(2,i);
+    S_bk(i) = Background(i)*Striper2Cones(1,i);
+    L_bk(i) = Background(i)*Striper2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*Striper2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*Striper2Cones(2,i);
+    S_Black(i) = BlackSurface(i)*Striper2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*Striper2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -123,12 +123,12 @@ figure
 subaxis(1,2,1, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone'); 
 subaxis(1,2,2, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
-FlounDir = sprintf('%s%s', Directory, '/');
-
-TiffWrite(FlounDir, DirImg, 'Striper_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_LS', LSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoLS', IsoLSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Striper_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+% FlounDir = sprintf('%s%s', Directory, '/');
+% 
+% TiffWrite(FlounDir, DirImg, 'Striper_DCimg', LconeAdpNorm, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Striper_LoG', Lcone_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Striper_LS', LSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Striper_IsoLS', IsoLSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Striper_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Striper_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 end

@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 for i = 1:length(imvector)
     readimg = imread([imvector{i}, '_Global_Ref.jpg']);
     img = roipoly(readimg);
@@ -409,14 +420,140 @@ for i = 1:length(JNDdir)
     close all
 end
 
+% first we get the JNDs
+ffdir = dir('Flagged Flounder/*'); % just start at i = 4 to ignore hidden files lmao
+% substratedir = dir('Flagged Flounder/*/*.Rad4U.mat');
+for i = 8:length(ffdir)
+    substratedir = dir(['Flagged Flounder/', ffdir(i).name, '/*.Rad4U.mat']);
+    for j = 1:length(substratedir)
+        QuantBuzzardConeImages(['Flagged Flounder/', ffdir(i).name], substratedir(j).name);
+        close all;
+    end
+    pause
+end
+% just fyi we gotta skip j = 3 and 4 for sand. not sure why. masks missing
+% i guess. i cannot stand making another mask right now, so this will be
+% fine.
 
-maskdir = dir('Masks/*.mat');
-for i = 74:length(maskdir)
-    stringfriend = strsplit(maskdir(i).name, '_');
-    newname = sprintf('%s%s%s%s%s%s%s%s', stringfriend{1}, '_', stringfriend{2}, '_', stringfriend{3}, '_', stringfriend{4}, '.Rad4U.mat');
-    movefile(['Masks/', maskdir(i).name], ['Masks/', newname]);
+% then we get the AnimalOnly and BGOnly kernel-smoothed density vectors
+load('BadPixelMask.mat');
+for i = 4:length(ffdir)
+    substratedir = dir(['Flagged Flounder/', ffdir(i).name, '/JND/Raptor_*']);
+    
+    for j = 1:length(substratedir)
+        load(['Flagged Flounder/', ffdir(i).name, '/JND/', substratedir(j).name]);
+        AnimalMask = importdata(['Masks/AnimalMask_SegImg_', substratedir(j).name(8:end)]);
+        BGMask = importdata(['Masks/BGMask_SegImg_', substratedir(j).name(8:end)]);
+        BGOnly = TetraDist.*BGMask.*BadPixelMask;
+        BGOnly = ksdensity(BGOnly(BGOnly ~= 0));
+        AnimalOnly = TetraDist.*AnimalMask.*BadPixelMask;
+        AnimalOnly = ksdensity(AnimalOnly(AnimalOnly ~= 0));
+        BGKSDensity(j,:) = BGOnly;
+        AnimalKSDensity(j,:) = AnimalOnly;
+        plot(BGOnly); hold on; plot(AnimalOnly); hold off
+        pause
+    end
+    close all
+    save(['Flagged Flounder/', ffdir(i).name, '/JND/BGKSDensity.mat'], 'BGKSDensity');
+    save(['Flagged Flounder/', ffdir(i).name, '/JND/AnimalKSDensity.mat'], 'AnimalKSDensity');
 end
 
+% then we plot the combined histograms
+subvector = {'Sand' 'Gravel' 'Blue' 'Black'};
+namevector = {'Sand' 'Gravel' 'Control'};
+for i = 1:3
+    refdir = sprintf('%s%s%s', 'Flagged Flounder/', subvector{i}, '/JND/');
+    load([refdir, 'RaptorBGKSDensity.mat']);
+    load([refdir, 'RaptorAnimalKSDensity.mat']);
+%     for j = 1:length(RaptorBGKSDensity(:,1))
+%         [whatever(j), pvalues(i,j)] = kstest2((RaptorBGKSDensity(j,:)/norm(RaptorBGKSDensity(j,:), Inf)), (RaptorAnimalKSDensity(j,:)/norm(AnimalKSDensity(j,:), Inf)));
+%     end
+
+%     BGsum = sum(Raptor_BGKSDensity)/norm(sum(Raptor_BGKSDensity), Inf);
+if i ~=1
+    BGS = Raptor_BGKSDensity(1,:);
+    BGS2 = BGS/norm(BGS,Inf);
+    AS = Raptor_AnimalKSDensity(1,:);
+    AS2 = AS/norm(AS, Inf);
+else
+    BGS = Raptor_BGKSDensity(3,:);
+    BGS2 = BGS/norm(BGS,Inf);
+    AS = Raptor_AnimalKSDensity(3,:);
+    AS2 = AS/norm(AS, Inf);
+end
+
+    subplot(3,1,i); plot(BGS2, 'LineWidth', 2); hold on; plot(AS2, 'LineWidth', 2);
+    title(namevector{i}, 'FontSize', 20);
+    ylabel('Normalized Pixel Counts', 'FontSize', 14);
+    if i ==3
+        xlabel('Minimal Discriminable Differences', 'FontSize', 14);
+    end
+    legend({'Background', 'Animal'}, 'Position', [0.69 0.82 0.2 0.08], 'FontSize', 13);
+    hold off;
+end
+
+% p-values for Kolmogorov-Smirnov: 0.4431, 0.047, 5.7E-10 for
+% Sand/Gravel/Blue Gravel respectively
+
+% edge detection metrics
+edgesubvector = {'Sand' 'Gravel' 'Black'}
+colorvector = {
+for i = 3:length(subvector)
+    clear PctEdge;
+    clear CtrlEdge;
+    clear CtrlEdge2;
+    clear h; clear bins;
+    refdir = sprintf('%s%s%s', 'Flagged Flounder/', subvector{i});
+    subdir = dir([refdir, '/*.Rad4U.mat']);
+    if i == 1
+        for j = [1:2, 5:length(subdir)]
+            [PctEdge(j), CtrlEdge(j,:)] = EvalEdge(refdir, subdir(j).name);
+        if j ~= length(subdir)
+            close all;
+        end
+        end
+    else
+    for j = 1:length(subdir)
+        [PctEdge(j), CtrlEdge(j,:)] = EvalEdge(refdir, subdir(j).name);
+        if j ~= length(subdir)
+            close all;
+        end
+    end
+    end
+    PctEdge = PctEdge(PctEdge~=0);
+    CtrlEdge = CtrlEdge(CtrlEdge~=0);
+%     CtrlEdge2 = reshape(CtrlEdge, 1, length(CtrlEdge(:,1))*length(CtrlEdge(1,:)));
+%     CtrlEdge2 = CtrlEdge2(CtrlEdge2~=0);
+%     bins = 30;
+%     h = hist(CtrlEdge2, bins);
+%     figure; histogram(CtrlEdge2, bins, 'FaceColor', [0.25 0.4 0.7]); axis([0 0.7 0 (max(h)+5)]); hold on;
+%     line([mean(PctEdge) mean(PctEdge)], [0 (max(h)+5)], 'LineStyle', '--', 'Color', [1 0 0]); hold off;
+     save([refdir, '/Edge/PctEdge.mat'], 'RaptorPctEdge');
+     save([refdir, '/Edge/CtrlEdge.mat'], 'RaptorCtrlEdge');
+end
+
+subvector2 = {'Sand' 'Gravel' 'Black'}
+for i = 1:length(subvector2)
+  refdir = sprintf('%s%s%s', 'Flagged Flounder/', subvector2{i}, '/Edge/');
+  load([refdir, 'PctEdge.mat']); load([refdir, 'CtrlEdge.mat']);
+  CtrlEdge2 = reshape(CtrlEdge, 1, length(CtrlEdge(:,1))*length(CtrlEdge(1,:)));
+  CtrlEdge2 = CtrlEdge2(CtrlEdge2~=0);
+  bins = 30;
+  h = hist(CtrlEdge2, bins);
+  subplot(3,1,i); histogram(CtrlEdge2, bins, 'FaceColor', [0.25 0.4 0.7]); axis([0 0.7 0 (max(h)+20)]); hold on;
+  ylabel('Counts', 'FontSize', 14);
+  line([mean(PctEdge) mean(PctEdge)], [0 (max(h)+20)], 'LineStyle', '--', 'Color', [1 0 0]); hold off;
+  if i == 3
+      title('Control', 'FontSize', 16);
+      xlabel('Proportion of Animal Outline Recovered by Edge Detection', 'FontSize', 14);
+  else
+      title(subvector2{i}, 'FontSize', 16);
+  end
+  legend({'Background', 'Animal'}, 'Position', [0.7 0.83 0.2 0.08], 'FontSize', 13);
+end
+
+
+% THEN we get the women
 
 
 

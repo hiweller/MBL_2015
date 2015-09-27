@@ -1,4 +1,4 @@
-function GetBluefishConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+function GetBluefishConeImages(Directory, Rad4Umat)
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
 % GBCI(1, 'Gravel', stringonumbers, 'Aug4', 1, 1)
@@ -7,11 +7,8 @@ function GetBluefishConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,L
 
 % load .dat file (should be in ConeImages)
 load Bluefish4Cones.dat % 4x16 (UV, S, M, L)
-
-ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
-LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
-RefObjectImg = importdata(ImgFilename, 1);
-load(LightFilename);
+load([Directory, '/', Rad4Umat]);
+RefObjectImg = BandImg;
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
@@ -30,10 +27,10 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 
 % get color information for bluefish cones
 for i = 1:16
-    Uimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(1,i);
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(2,i);
-    Mimg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(3,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Bluefish4Cones(4,i);
+    Uimg(:,:,i) = RefObjectImg(:,:,i)*Bluefish4Cones(1,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*Bluefish4Cones(2,i);
+    Mimg(:,:,i) = RefObjectImg(:,:,i)*Bluefish4Cones(3,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*Bluefish4Cones(4,i);
 end
 
 Ucone = sum(Uimg,3); % summation across all wavelengths
@@ -49,18 +46,18 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    U_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
-    M_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
-    U_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
-    M_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
-    U_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(1,i); 
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(2,i);
-    M_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(3,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Bluefish4Cones(4,i);
+    U_bk(i) = Background(i)*Bluefish4Cones(1,i); 
+    S_bk(i) = Background(i)*Bluefish4Cones(2,i);
+    M_bk(i) = Background(i)*Bluefish4Cones(3,i);
+    L_bk(i) = Background(i)*Bluefish4Cones(4,i);
+    U_White(i) = WhiteSurface(i)*Bluefish4Cones(1,i); 
+    S_White(i) = WhiteSurface(i)*Bluefish4Cones(2,i);
+    M_White(i) = WhiteSurface(i)*Bluefish4Cones(3,i);
+    L_White(i) = WhiteSurface(i)*Bluefish4Cones(4,i);
+    U_Black(i) = BlackSurface(i)*Bluefish4Cones(1,i); 
+    S_Black(i) = BlackSurface(i)*Bluefish4Cones(2,i);
+    M_Black(i) = BlackSurface(i)*Bluefish4Cones(3,i);
+    L_Black(i) = BlackSurface(i)*Bluefish4Cones(4,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
@@ -158,16 +155,16 @@ subaxis(2,2,2, 'Spacing', 0.03), imshow(IsoSconeEdge_img); title('Iso S-cone');
 subaxis(2,2,3, 'Spacing', 0.03), imshow(IsoMconeEdge_img); title('Iso M-cone');
 subaxis(2,2,4, 'Spacing', 0.03), imshow(IsoLconeEdge_img); title('Iso L-cone');
 
-FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_DCimg', LconeAdpNorm, 'bw');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_LoG', Lcone_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_LMS', LMSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_MSU', MSUimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLMS', IsoLMSimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMSU', IsoMSUimg, 'rgb');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoUconeLoG', IsoUconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoSconeLoG', IsoSconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMconeLoG', IsoMconeEdge_img, 'bw');
-TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLconeLoG', IsoLconeEdge_img, 'bw');
+% FlounDir = sprintf('%s%s%s%s%s%s','JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_DCimg', LconeAdpNorm, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_LoG', Lcone_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_LMS', LMSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_MSU', MSUimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLMS', IsoLMSimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMSU', IsoMSUimg, 'rgb');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoUconeLoG', IsoUconeEdge_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoSconeLoG', IsoSconeEdge_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoMconeLoG', IsoMconeEdge_img, 'bw');
+% TiffWrite(FlounDir, DirImg, 'Pomatomus_IsoLconeLoG', IsoLconeEdge_img, 'bw');
 
 end

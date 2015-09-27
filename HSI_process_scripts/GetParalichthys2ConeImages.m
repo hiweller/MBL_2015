@@ -1,4 +1,4 @@
-function GetParalichthys2ConeImages(FlounderNum,Substrate,DirImg,DateLight,LightNum,LightDirection)
+function GetParalichthys2ConeImages(Directory, Rad4Umat)
 % 449, 525 nm
 % ConeImages/FlounderNum/Substrate/Global_Ref_File
 % always start in ConeImages!
@@ -7,10 +7,10 @@ function GetParalichthys2ConeImages(FlounderNum,Substrate,DirImg,DateLight,Light
 % load .dat file (should be in ConeImages)
 load Paralichthys2Cones.dat % 2x16; 449 nm = "S" cone and 525 nm = "L" cone
 
-ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
-LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
-RefObjectImg = importdata(ImgFilename, 1);
-load(LightFilename);
+% ImgFilename = ['JuvFlounder #', num2str(FlounderNum), '/', Substrate, '/', DirImg, '_Global_Ref'];
+% LightFilename = ['../../SpecData/',DateLight,'/LightField',num2str(LightNum)];
+load([Directory, '/', Rad4Umat]);
+RefObjectImg = BandImg;
 
 WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', '500nm', '520nm', '540nm', '560nm', '580nm', '600nm', '620nm', '640nm', '660nm'};
 
@@ -30,8 +30,8 @@ text(0.5, 1,'\bf Reflectance images of 16 bands','HorizontalAlignment','center',
 % get color information for fish cones
 % Limg = 525nm cone (monochromatic vision)
 for i = 1:16
-    Simg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Paralichthys2Cones(1,i);
-    Limg(:,:,i) = RefObjectImg(:,:,i)*LightField(1,i)*Paralichthys2Cones(2,i);
+    Simg(:,:,i) = RefObjectImg(:,:,i)*Paralichthys2Cones(1,i);
+    Limg(:,:,i) = RefObjectImg(:,:,i)*Paralichthys2Cones(2,i);
 end
 
 Scone = sum(Simg,3);
@@ -45,12 +45,12 @@ WhiteSurface = ones(1,16); % white surface for normalization purpose
 BlackSurface = 0.01*ones(1,16); % black surface for normalization purpose
 
 for i = 1:16
-    S_bk(i) = Background(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_bk(i) = Background(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
-    S_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_White(i) = WhiteSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
-    S_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(1,i);
-    L_Black(i) = BlackSurface(i)*LightField(LightDirection,i)*Paralichthys2Cones(2,i);
+    S_bk(i) = Background(i)*Paralichthys2Cones(1,i);
+    L_bk(i) = Background(i)*Paralichthys2Cones(2,i);
+    S_White(i) = WhiteSurface(i)*Paralichthys2Cones(1,i);
+    L_White(i) = WhiteSurface(i)*Paralichthys2Cones(2,i);
+    S_Black(i) = BlackSurface(i)*Paralichthys2Cones(1,i);
+    L_Black(i) = BlackSurface(i)*Paralichthys2Cones(2,i);
 end
 
 % make the quantal catch 0 equal the black surface quantal catch (to avoid log problem)
