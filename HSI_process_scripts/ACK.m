@@ -553,8 +553,6 @@ for i = 1:length(subvector2)
 end
 
 
-% THEN we get the women
-
 
 
 
