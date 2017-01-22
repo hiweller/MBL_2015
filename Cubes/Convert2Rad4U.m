@@ -46,8 +46,10 @@ WaveNumber = {'360nm', '380nm', '405nm', '420nm', '436nm', '460nm', '480nm', ...
 
 imagedir = dir([file_folder, '/*.3d']);
 
-for iimage = 1:length(imagedir)
-    cuberead = fread(fopen([file_folder '/' imagedir(iimage).name]), [2048 2048], 'uint16');
+for iimage = [1 450:length(imagedir)]
+    fid = fopen([file_folder '/' imagedir(iimage).name]);
+    cuberead = fread(fid, [2048 2048], 'uint16');
+    fclose(fid);
     %     cuberead = double(cuberead);
     %     cuberead(cuberead>2^16) = 0;
     
@@ -221,10 +223,16 @@ for iimage = 1:length(imagedir)
             fig = figure;
         end
         figure(fig);
+        clf
+        subplot(1,2,1)
         imagesc(RGBImg);
         axis square;
         axis off;
         title(imagedir(iimage).name,'Interpreter','none');
+        subplot(1,2,2)
+        imagesc(squeeze(BandImg(:,:,1)));colormap(gray)
+        axis square;
+        axis off;
         if length(imagedir)> 1; pause;end
     end
     
